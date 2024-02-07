@@ -6,7 +6,7 @@ import lombok.extern.java.Log;
 import nostr.base.*;
 import nostr.crypto.schnorr.Schnorr;
 import nostr.event.impl.DirectMessageEvent;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.tag.DelegationTag;
 import nostr.event.tag.PubKeyTag;
 import nostr.util.NostrException;
@@ -74,9 +74,9 @@ public class IdentityHelper {
     }
 
     public Signature sign(@NonNull ISignable signable) throws NostrException {
-        if (signable instanceof GenericEvent genericEvent) {
+        if (signable instanceof GenericEventImpl genericEventImpl) {
             try {
-                return signEvent(genericEvent);
+                return signEvent(genericEventImpl);
             } catch (Exception ex) {
                 throw new NostrException(ex);
             }
@@ -90,7 +90,7 @@ public class IdentityHelper {
         throw new NostrException();
     }
 
-    private Signature signEvent(@NonNull GenericEvent event) throws Exception {
+    private Signature signEvent(@NonNull GenericEventImpl event) throws Exception {
         event.update();
         log.log(Level.FINER, "Serialized event: {0}", new String(event.get_serializedEvent()));
         final var signedHashedSerializedEvent = Schnorr.sign(NostrUtil.sha256(event.get_serializedEvent()), this.identity.getPrivateKey().getRawData(), generateAuxRand());

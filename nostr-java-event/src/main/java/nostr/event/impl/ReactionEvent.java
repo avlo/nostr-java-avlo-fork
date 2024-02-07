@@ -9,7 +9,6 @@ import nostr.event.Reaction;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import lombok.extern.java.Log;
 import nostr.base.ElementAttribute;
 import nostr.base.annotation.Event;
 import nostr.event.BaseTag;
@@ -22,19 +21,19 @@ import nostr.event.tag.EventTag;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Reactions", nip = 25)
-public class ReactionEvent extends GenericEvent {
+public class ReactionEvent extends GenericEventImpl {
 
     public ReactionEvent(PublicKey pubKey, List<BaseTag> tags, Reaction reaction) {
         super(pubKey, Kind.REACTION, tags, reaction.getEmoji());
     }
 
-    public ReactionEvent(PublicKey pubKey, GenericEvent event, Reaction reaction) {
+    public ReactionEvent(PublicKey pubKey, GenericEventImpl event, Reaction reaction) {
         super(pubKey, Kind.REACTION);
         this.setContent(reaction.getEmoji());
         this.addTag(EventTag.builder().idEvent(event.getId()).build());
     }
 
-    public ReactionEvent(PublicKey pubKey, GenericEvent event, String content, @NonNull URL emoji) {
+    public ReactionEvent(PublicKey pubKey, GenericEventImpl event, String content, @NonNull URL emoji) {
         super(pubKey, Kind.REACTION);
         this.setContent(content);
         this.addTag(EventTag.builder().idEvent(event.getId()).build());

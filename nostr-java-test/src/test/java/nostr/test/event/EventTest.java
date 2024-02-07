@@ -1,7 +1,6 @@
 package nostr.test.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.io.IOException;
 import nostr.base.ElementAttribute;
 
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +12,7 @@ import nostr.base.Relay;
 import nostr.crypto.bech32.Bech32;
 import nostr.crypto.bech32.Bech32Prefix;
 import nostr.event.BaseTag;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.GenericMessage;
 import nostr.event.impl.GenericTag;
 import nostr.event.json.codec.BaseTagEncoder;
@@ -36,7 +35,7 @@ public class EventTest {
     public void testCreateTextNoteEvent() throws NostrException {
         System.out.println("testCreateTextNoteEvent");
         PublicKey publicKey = Identity.getInstance().getPublicKey();
-        GenericEvent instance = EntityFactory.Events.createTextNoteEvent(publicKey);
+        GenericEventImpl instance = EntityFactory.Events.createTextNoteEvent(publicKey);
         instance.update();
         Assertions.assertNotNull(instance.getId());
         Assertions.assertNotNull(instance.getCreatedAt());

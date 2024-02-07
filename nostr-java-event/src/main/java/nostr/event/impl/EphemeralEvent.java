@@ -5,7 +5,6 @@ import java.util.List;
 import nostr.base.PublicKey;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.java.Log;
 import nostr.base.annotation.Event;
 import nostr.event.BaseTag;
 import nostr.event.tag.PubKeyTag;
@@ -17,7 +16,7 @@ import nostr.event.tag.PubKeyTag;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Ephemeral Events", nip = 16)
-public class EphemeralEvent extends GenericEvent {
+public class EphemeralEvent extends GenericEventImpl {
 
     public EphemeralEvent(PublicKey pubKey, Integer kind, List<BaseTag> tags, String content) {
         super(pubKey, kind, tags, content);

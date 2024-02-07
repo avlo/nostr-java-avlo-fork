@@ -14,7 +14,7 @@ import nostr.base.PublicKey;
 import nostr.base.Relay;
 import nostr.event.BaseTag;
 import nostr.event.Marker;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.GenericTag;
 import nostr.event.tag.EventTag;
 import nostr.event.tag.PubKeyTag;
@@ -59,7 +59,7 @@ public class NIP172 {
      * @param uniqueJobName
      * @return 
      */
-    public static GenericEvent createJobRequestEvent(PublicKey pubKey, String jobType, String jobModel, String inputTagData, String inputTagType, Marker inputTypeMarker, List<Relay> relays, Integer bidTagAmount, Integer bidTagMaxPrice, Integer expiration, List<PublicKey> serviceProviders, String uniqueJobName) {
+    public static GenericEventImpl createJobRequestEvent(PublicKey pubKey, String jobType, String jobModel, String inputTagData, String inputTagType, Marker inputTypeMarker, List<Relay> relays, Integer bidTagAmount, Integer bidTagMaxPrice, Integer expiration, List<PublicKey> serviceProviders, String uniqueJobName) {
         List<BaseTag> tags = new ArrayList<>();
         tags.add(createJobTag(jobType, jobModel));
         tags.add(createInputTag(jobType, inputTagType, inputTypeMarker));
@@ -70,7 +70,7 @@ public class NIP172 {
         serviceProviders.forEach(p -> tags.add(PubKeyTag.builder().publicKey(p).build()));
 
         PublicKey sender = Identity.getInstance().getPublicKey();
-        return new GenericEvent(sender, 68001, tags, null);
+        return new GenericEventImpl(sender, 68001, tags, null);
     }
 
     /**
@@ -84,7 +84,7 @@ public class NIP172 {
      * @param requestedPaymentAmount
      * @return 
      */
-    public static GenericEvent createJobResultEvent(PublicKey pubKey, String request, String eventId, PublicKey jobRequester, StatusCode status, String statusMoreInfo, Integer requestedPaymentAmount) {
+    public static GenericEventImpl createJobResultEvent(PublicKey pubKey, String request, String eventId, PublicKey jobRequester, StatusCode status, String statusMoreInfo, Integer requestedPaymentAmount) {
         List<BaseTag> tags = new ArrayList<>();
         tags.add(EventTag.builder().idEvent(eventId).build());
         tags.add(PubKeyTag.builder().publicKey(pubKey).build());
@@ -93,7 +93,7 @@ public class NIP172 {
         tags.add(createPaymentTag(requestedPaymentAmount));
 
         PublicKey sender = Identity.getInstance().getPublicKey();
-        return new GenericEvent(sender, 68002, tags, null);
+        return new GenericEventImpl(sender, 68002, tags, null);
     }
 
     /**

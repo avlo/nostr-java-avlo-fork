@@ -1,7 +1,5 @@
 package nostr.event.impl;
 
-import java.util.logging.Level;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -10,7 +8,6 @@ import java.util.ArrayList;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.java.Log;
 import nostr.base.IEncoder;
 import nostr.base.UserProfile;
 import nostr.base.PublicKey;
@@ -25,7 +22,7 @@ import nostr.event.Kind;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Metadata")
-public final class MetadataEvent extends GenericEvent {
+public final class MetadataEvent extends GenericEventImpl {
 
     private static final String NAME_PATTERN = "\\w[\\w\\-]+\\w";
 

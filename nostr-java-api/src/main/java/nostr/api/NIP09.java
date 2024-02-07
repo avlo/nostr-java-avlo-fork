@@ -10,7 +10,7 @@ import lombok.NonNull;
 import nostr.api.factory.impl.NIP09.DeletionEventFactory;
 import nostr.event.BaseTag;
 import nostr.event.impl.DeletionEvent;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.tag.EventTag;
 
 /**
@@ -35,7 +35,7 @@ public class NIP09 extends Nostr {
      * @param event the (single) event to delete
      * @return the deletion event
      */
-    public static DeletionEvent createDeletionEvent(@NonNull GenericEvent event) {
+    public static DeletionEvent createDeletionEvent(@NonNull GenericEventImpl event) {
         EventTag tag = new EventTag(event.getId());
         List<BaseTag> tags = new ArrayList<>();
         tags.add(tag);

@@ -3,9 +3,9 @@ package nostr.event.json.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import nostr.event.impl.Product;
+
 import java.io.IOException;
-import nostr.event.impl.NostrMarketplaceEvent.Product;
-import nostr.event.impl.NostrMarketplaceEvent.Product.Spec;
 
 /**
  *
@@ -36,7 +36,7 @@ public class ProductSerializer extends JsonSerializer<Product> {
         if (!product.getSpecs().isEmpty()) {
             jsonGenerator.writeFieldName("specs");
             jsonGenerator.writeStartArray();
-            for (Spec spec : product.getSpecs()) {
+            for (Product.Spec spec : product.getSpecs()) {
                 jsonGenerator.writeStartArray();
                 jsonGenerator.writeString(spec.getKey());
                 jsonGenerator.writeString(spec.getValue());

@@ -13,7 +13,7 @@ import nostr.base.ElementAttribute;
 import nostr.base.PublicKey;
 import nostr.base.Relay;
 import nostr.event.BaseTag;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.GenericTag;
 import nostr.event.tag.EventTag;
 import nostr.event.tag.PubKeyTag;
@@ -35,7 +35,7 @@ public class NIP57 extends Nostr {
      * @param content
      * @return
      */
-    public static GenericEvent createZapEvent(@NonNull Integer amount, @NonNull String lnurl, Relay relay, @NonNull PublicKey recipient, EventTag eventTag, String content) {
+    public static GenericEventImpl createZapEvent(@NonNull Integer amount, @NonNull String lnurl, Relay relay, @NonNull PublicKey recipient, EventTag eventTag, String content) {
         var tags = new ArrayList<BaseTag>();
         tags.add(createLnurlTag(lnurl));
         tags.add(createAmountTag(amount));
@@ -44,7 +44,7 @@ public class NIP57 extends Nostr {
         tags.add(eventTag);
 
         var sender = Identity.getInstance().getPublicKey();
-        return new GenericEvent(sender, 9734, tags, content);
+        return new GenericEventImpl(sender, 9734, tags, content);
     }
 
     /**
@@ -57,7 +57,7 @@ public class NIP57 extends Nostr {
      * @param eventTag
      * @return
      */
-    public static GenericEvent createZapReceiptEvent(@NonNull GenericEvent zapEvent, @NonNull String bolt11, String description, @NonNull String preimage, @NonNull PublicKey recipient, @NonNull EventTag eventTag) {
+    public static GenericEventImpl createZapReceiptEvent(@NonNull GenericEventImpl zapEvent, @NonNull String bolt11, String description, @NonNull String preimage, @NonNull PublicKey recipient, @NonNull EventTag eventTag) {
         var tags = new ArrayList<BaseTag>();
         tags.add(createBolt11Tag(bolt11));
         tags.add(createDescriptionTag(description));
@@ -66,7 +66,7 @@ public class NIP57 extends Nostr {
         tags.add(eventTag);
 
         var sender = Identity.getInstance().getPublicKey();
-        return new GenericEvent(sender, 9735, tags, Nostr.Json.encode(zapEvent));
+        return new GenericEventImpl(sender, 9735, tags, Nostr.Json.encode(zapEvent));
     }
 
     /**

@@ -12,7 +12,7 @@ import lombok.NonNull;
 import nostr.api.factory.EventFactory;
 import nostr.api.factory.TagFactory;
 import nostr.event.BaseTag;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.id.Identity;
 
 /**
@@ -23,7 +23,7 @@ public class NIP23 {
 
     @Data
     @EqualsAndHashCode(callSuper = false)
-    public static class LongFormContentEventFactory extends EventFactory<GenericEvent> {
+    public static class LongFormContentEventFactory extends EventFactory<GenericEventImpl> {
 
         public LongFormContentEventFactory(@NonNull String content) {
             super(content);
@@ -42,8 +42,8 @@ public class NIP23 {
         }
 
         @Override
-        public GenericEvent create() {
-            return new GenericEvent(getSender(), Kinds.KIND_PRE_LONG_FORM_CONTENT, getTags(), getContent());
+        public GenericEventImpl create() {
+            return new GenericEventImpl(getSender(), Kinds.KIND_PRE_LONG_FORM_CONTENT, getTags(), getContent());
         }
     }
 

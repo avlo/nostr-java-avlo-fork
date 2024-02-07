@@ -19,7 +19,7 @@ import nostr.event.Reaction;
 import nostr.event.impl.DirectMessageEvent;
 import nostr.event.impl.EphemeralEvent;
 import nostr.event.impl.Filters;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.GenericTag;
 import nostr.event.impl.InternetIdentifierMetadataEvent;
 import nostr.event.impl.MentionsEvent;
@@ -94,7 +94,7 @@ public class EntityFactory {
             return new MetadataEvent(publicKey, profile);
         }
 
-        public static ReactionEvent createReactionEvent(PublicKey publicKey, GenericEvent original) {
+        public static ReactionEvent createReactionEvent(PublicKey publicKey, GenericEventImpl original) {
             List<BaseTag> tagList = new ArrayList<>();
             tagList.add(EventTag.builder().idEvent(original.getId()).build());
             return new ReactionEvent(publicKey, tagList, Reaction.LIKE);
@@ -131,14 +131,14 @@ public class EntityFactory {
         public static GenericTag createGenericTag(PublicKey publicKey, IEvent event) {
             GenericTag tag = new GenericTag("devil");
             tag.addAttribute(ElementAttribute.builder().name("param0").value("Lucifer").nip(666).build());
-            ((GenericEvent) event).addTag(tag);
+            ((GenericEventImpl) event).addTag(tag);
             return tag;
         }
 
         public static GenericTag createGenericTag(PublicKey publicKey, IEvent event, Integer tagNip) {
             GenericTag tag = new GenericTag("devil", tagNip);
             tag.addAttribute(ElementAttribute.builder().name("param0").value("Lucifer").nip(666).build());
-            ((GenericEvent) event).addTag(tag);
+            ((GenericEventImpl) event).addTag(tag);
             return tag;
         }
 

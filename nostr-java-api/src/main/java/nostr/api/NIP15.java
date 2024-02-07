@@ -12,15 +12,10 @@ import nostr.api.factory.impl.NIP15.CustomerOrderEventFactory;
 import nostr.api.factory.impl.NIP15.MerchantRequestPaymentEventFactory;
 import nostr.api.factory.impl.NIP15.VerifyPaymentOrShippedEventFactory;
 import nostr.event.BaseTag;
-import nostr.event.impl.CreateOrUpdateProductEvent;
-import nostr.event.impl.CreateOrUpdateStallEvent;
+import nostr.event.impl.*;
 import nostr.event.impl.CreateOrUpdateStallEvent.Stall;
-import nostr.event.impl.CustomerOrderEvent;
 import nostr.event.impl.CustomerOrderEvent.Customer;
-import nostr.event.impl.MerchantRequestPaymentEvent;
 import nostr.event.impl.MerchantRequestPaymentEvent.Payment;
-import nostr.event.impl.NostrMarketplaceEvent.Product;
-import nostr.event.impl.VerifyPaymentOrShippedEvent;
 import nostr.event.impl.VerifyPaymentOrShippedEvent.PaymentShipmentStatus;
 
 /**

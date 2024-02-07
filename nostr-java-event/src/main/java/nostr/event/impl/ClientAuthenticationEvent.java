@@ -16,7 +16,7 @@ import nostr.event.Kind;
  * @author squirrel
  */
 @Event(name = "Authentication of clients to relays", nip = 42)
-public class ClientAuthenticationEvent extends GenericEvent {
+public class ClientAuthenticationEvent extends GenericEventImpl {
 
     public ClientAuthenticationEvent(@NonNull PublicKey pubKey, @NonNull List<BaseTag> tags) {
         super(pubKey, Kind.CLIENT_AUTH, tags);

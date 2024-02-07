@@ -7,7 +7,6 @@ import nostr.base.PublicKey;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import lombok.extern.java.Log;
 import nostr.base.UserProfile;
 import nostr.base.annotation.Event;
 import nostr.event.util.Nip05Validator;
@@ -21,7 +20,7 @@ import static nostr.util.NostrUtil.escapeJsonString;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Internet Identifier Metadata Event", nip = 5)
-public final class InternetIdentifierMetadataEvent extends GenericEvent {
+public final class InternetIdentifierMetadataEvent extends GenericEventImpl {
 
     public InternetIdentifierMetadataEvent(PublicKey pubKey, @NonNull UserProfile profile) {
         super(pubKey, Kind.SET_METADATA);

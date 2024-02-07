@@ -3,12 +3,11 @@ package nostr.test.event;
 import nostr.base.PublicKey;
 import nostr.event.BaseTag;
 import nostr.event.Marker;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.json.codec.BaseMessageDecoder;
 import nostr.event.message.EventMessage;
 import nostr.event.tag.EventTag;
 import nostr.event.tag.PubKeyTag;
-import nostr.util.NostrException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +43,7 @@ public class DecodeTest {
         EventMessage eventMessage = (EventMessage) message;
 
         Assertions.assertEquals("temp20230627", eventMessage.getSubscriptionId());
-        GenericEvent eventImpl = (GenericEvent) eventMessage.getEvent();
+        GenericEventImpl eventImpl = (GenericEventImpl) eventMessage.getEvent();
 
         Assertions.assertEquals("28f2fc030e335d061f0b9d03ce0e2c7d1253e6fadb15d89bd47379a96b2c861a", eventImpl.getId());
         Assertions.assertEquals(1, eventImpl.getKind());

@@ -10,7 +10,7 @@ import lombok.NonNull;
 import nostr.api.factory.impl.NIP25.ReactionEventFactory;
 import nostr.event.BaseTag;
 import nostr.event.Reaction;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.ReactionEvent;
 
 /**
@@ -25,7 +25,7 @@ public class NIP25 extends Nostr {
      * @param reaction
      * @return 
      */
-    public static ReactionEvent createReactionEvent(@NonNull GenericEvent event, @NonNull Reaction reaction) {
+    public static ReactionEvent createReactionEvent(@NonNull GenericEventImpl event, @NonNull Reaction reaction) {
         return new ReactionEventFactory(event, reaction).create();
     }
     
@@ -36,7 +36,7 @@ public class NIP25 extends Nostr {
      * @param emoji the emoji image url
      * @return 
      */
-    public static ReactionEvent createReactionEvent(@NonNull GenericEvent event, @NonNull String content, URL emoji) {
+    public static ReactionEvent createReactionEvent(@NonNull GenericEventImpl event, @NonNull String content, URL emoji) {
         return new ReactionEventFactory(event, content, emoji).create();
     }
 
@@ -55,7 +55,7 @@ public class NIP25 extends Nostr {
      * 
      * @param event
      */
-    public static void like(@NonNull GenericEvent event) {
+    public static void like(@NonNull GenericEventImpl event) {
         react(event, Reaction.LIKE.getEmoji(), null);
     }
 
@@ -63,7 +63,7 @@ public class NIP25 extends Nostr {
      * 
      * @param event
      */
-    public static void dislike(@NonNull GenericEvent event) {
+    public static void dislike(@NonNull GenericEventImpl event) {
         react(event, Reaction.DISLIKE.getEmoji(), null);
     }
     
@@ -73,7 +73,7 @@ public class NIP25 extends Nostr {
      * @param reaction
      * @param url
      */
-    public static void react(@NonNull GenericEvent event, @NonNull String reaction, URL url) {
+    public static void react(@NonNull GenericEventImpl event, @NonNull String reaction, URL url) {
         var reactionEvent = new ReactionEventFactory(event, reaction, url).create();
 
         Nostr.sign(reactionEvent);

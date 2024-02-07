@@ -15,7 +15,6 @@ import lombok.ToString;
 import nostr.base.PublicKey;
 import nostr.base.annotation.Event;
 import nostr.event.AbstractEventContent;
-import nostr.event.impl.NostrMarketplaceEvent.Product;
 import nostr.event.json.serializer.ItemSerializer;
 
 /**

@@ -11,7 +11,7 @@ import nostr.event.tag.PubKeyTag;
  *
  */
 @Event(name = "Mute User on Channel", nip = 28)
-public class MuteUserEvent extends GenericEvent {
+public class MuteUserEvent extends GenericEventImpl {
 
     public MuteUserEvent(@NonNull PublicKey pubKey, @NonNull PublicKey mutedUser, String content) {
         super(pubKey, Kind.MUTE_USER);

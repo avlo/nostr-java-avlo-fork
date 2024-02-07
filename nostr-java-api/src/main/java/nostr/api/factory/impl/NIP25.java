@@ -12,7 +12,7 @@ import lombok.NonNull;
 import nostr.api.factory.EventFactory;
 import nostr.event.BaseTag;
 import nostr.event.Reaction;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.ReactionEvent;
 import nostr.id.Identity;
 
@@ -27,40 +27,40 @@ public class NIP25 {
     @EqualsAndHashCode(callSuper = false)
     public static class ReactionEventFactory extends EventFactory<ReactionEvent> {
 
-        public final GenericEvent event;
+        public final GenericEventImpl event;
         private final URL emoji;
 
-        public ReactionEventFactory(@NonNull GenericEvent event, Reaction reaction) {
+        public ReactionEventFactory(@NonNull GenericEventImpl event, Reaction reaction) {
             super(reaction.getEmoji());
             this.event = event;
             this.emoji = null;
         }
 
-        public ReactionEventFactory(@NonNull Identity sender, @NonNull GenericEvent event, Reaction reaction) {
+        public ReactionEventFactory(@NonNull Identity sender, @NonNull GenericEventImpl event, Reaction reaction) {
             super(sender, reaction.getEmoji());
             this.event = event;
             this.emoji = null;
         }
 
-        public ReactionEventFactory(@NonNull List<BaseTag> tags, @NonNull GenericEvent event, String reaction) {
+        public ReactionEventFactory(@NonNull List<BaseTag> tags, @NonNull GenericEventImpl event, String reaction) {
             super(tags, reaction);
             this.event = event;
             this.emoji = null;
         }
 
-        public ReactionEventFactory(@NonNull Identity sender, @NonNull List<BaseTag> tags, @NonNull GenericEvent event, String reaction) {
+        public ReactionEventFactory(@NonNull Identity sender, @NonNull List<BaseTag> tags, @NonNull GenericEventImpl event, String reaction) {
             super(sender, tags, reaction);
             this.event = event;
             this.emoji = null;
         }
 
-        public ReactionEventFactory(@NonNull GenericEvent event, String content, URL emoji) {
+        public ReactionEventFactory(@NonNull GenericEventImpl event, String content, URL emoji) {
             super(content);
             this.event = event;
             this.emoji = emoji;            
         }
 
-        public ReactionEventFactory(@NonNull Identity sender, @NonNull GenericEvent event, String content, URL emoji) {
+        public ReactionEventFactory(@NonNull Identity sender, @NonNull GenericEventImpl event, String content, URL emoji) {
             super(sender, content);
             this.event = event;
             this.emoji = emoji;

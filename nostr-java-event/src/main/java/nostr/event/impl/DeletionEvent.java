@@ -16,7 +16,7 @@ import nostr.event.BaseTag;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Event Deletion", nip = 9)
-public class DeletionEvent extends GenericEvent {
+public class DeletionEvent extends GenericEventImpl {
 
     public DeletionEvent(PublicKey pubKey, List<BaseTag> tags, String content) {        
         super(pubKey, Kind.DELETION, tags, content);        

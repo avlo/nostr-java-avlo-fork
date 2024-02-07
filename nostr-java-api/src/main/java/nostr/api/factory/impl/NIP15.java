@@ -11,12 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import nostr.api.factory.EventFactory;
 import nostr.event.BaseTag;
-import nostr.event.impl.CreateOrUpdateProductEvent;
-import nostr.event.impl.CreateOrUpdateStallEvent;
-import nostr.event.impl.CustomerOrderEvent;
-import nostr.event.impl.MerchantRequestPaymentEvent;
-import nostr.event.impl.NostrMarketplaceEvent;
-import nostr.event.impl.VerifyPaymentOrShippedEvent;
+import nostr.event.impl.*;
 import nostr.event.tag.HashtagTag;
 import nostr.event.tag.IdentifierTag;
 import nostr.id.Identity;
@@ -138,17 +133,17 @@ public class NIP15 {
     @EqualsAndHashCode(callSuper = false)
     public static class CreateOrUpdateProductEventFactory extends EventFactory<CreateOrUpdateProductEvent> {
 
-        private final NostrMarketplaceEvent.Product product;
+        private final Product product;
         private final List<String> categories;
 
-        public CreateOrUpdateProductEventFactory(@NonNull NostrMarketplaceEvent.Product product, List<String> categories) {
+        public CreateOrUpdateProductEventFactory(@NonNull Product product, List<String> categories) {
             super(product.toString());
             this.product = product;
             this.categories = categories;
         }
 
         @Deprecated
-        public CreateOrUpdateProductEventFactory(Identity identity, @NonNull NostrMarketplaceEvent.Product product, List<String> categories) {
+        public CreateOrUpdateProductEventFactory(Identity identity, @NonNull Product product, List<String> categories) {
             super(identity, product.toString());
             this.product = product;
             this.categories = categories;

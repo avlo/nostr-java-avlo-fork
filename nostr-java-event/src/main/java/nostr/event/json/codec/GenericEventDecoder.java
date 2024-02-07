@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nostr.base.IDecoder;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 
 /**
  *
@@ -14,16 +14,16 @@ import nostr.event.impl.GenericEvent;
  */
 @Data
 @AllArgsConstructor
-public class GenericEventDecoder implements IDecoder<GenericEvent> {
+public class GenericEventDecoder implements IDecoder<GenericEventImpl> {
 
     private final String jsonEvent;
 
     @Override
-    public GenericEvent decode() {
+    public GenericEventImpl decode() {
         try {
             var mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            return mapper.readValue(jsonEvent, GenericEvent.class);
+            return mapper.readValue(jsonEvent, GenericEventImpl.class);
         } catch (JsonProcessingException ex) {
             throw new RuntimeException(ex);
         }

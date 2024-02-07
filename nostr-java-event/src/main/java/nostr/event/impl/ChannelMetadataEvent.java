@@ -14,7 +14,7 @@ import static nostr.util.NostrUtil.escapeJsonString;
  *
  */
 @Event(name = "Channel Metadata", nip = 28)
-public class ChannelMetadataEvent extends GenericEvent {
+public class ChannelMetadataEvent extends GenericEventImpl {
 
     public ChannelMetadataEvent(@NonNull PublicKey pubKey, @NonNull ChannelCreateEvent event, ChannelProfile profile) {
         super(pubKey, Kind.CHANNEL_METADATA, new ArrayList<>(), escapeJsonString(profile.toString()));

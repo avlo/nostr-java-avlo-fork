@@ -17,8 +17,8 @@ import nostr.crypto.bech32.Bech32Prefix;
 import nostr.event.BaseTag;
 import nostr.event.impl.CreateOrUpdateStallEvent;
 import nostr.event.impl.CreateOrUpdateStallEvent.Stall;
-import nostr.event.impl.NostrMarketplaceEvent;
-import nostr.event.impl.NostrMarketplaceEvent.Product.Spec;
+import nostr.event.impl.Product.Spec;
+import nostr.event.impl.Product;
 import nostr.id.Identity;
 import nostr.util.NostrException;
 import org.junit.jupiter.api.Assertions;
@@ -241,10 +241,10 @@ public class ApiEventTest {
         return stall;
     }
 
-    private NostrMarketplaceEvent.Product createProduct(Stall stall) {
+    private Product createProduct(Stall stall) {
 
         // Create the product
-        var product = new NostrMarketplaceEvent.Product();
+        var product = new Product();
         product.setCurrency("USD");
         product.setDescription("Un bijou en or");
         product.setImages(new ArrayList<>());

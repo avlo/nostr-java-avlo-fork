@@ -12,7 +12,7 @@ import nostr.event.tag.PubKeyTag;
  * @author squirrel
  */
 @Event(name = "Encrypted Direct Message", nip = 4)
-public class DirectMessageEvent extends GenericEvent {
+public class DirectMessageEvent extends GenericEventImpl {
 
     protected DirectMessageEvent() {
     }

@@ -31,7 +31,7 @@ import nostr.event.Reaction;
 import nostr.event.impl.ChannelCreateEvent;
 import nostr.event.impl.ChannelMessageEvent;
 import nostr.event.impl.Filters;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.list.KindList;
 import nostr.event.tag.EventTag;
 import nostr.event.tag.PubKeyTag;
@@ -254,7 +254,7 @@ public class NostrApiExamples {
         Nostr.send(filters, subId);
     }
 
-    private static GenericEvent createChannel() {
+    private static GenericEventImpl createChannel() {
         try {
             logHeader("createChannel");
             
@@ -293,24 +293,24 @@ public class NostrApiExamples {
 
     }
 
-    private static GenericEvent sendChannelMessage() {
+    private static GenericEventImpl sendChannelMessage() {
         logHeader("sendChannelMessage");
 
         var channelCreateEvent = createChannel();
 
-        GenericEvent event = NIP28.createChannelMessageEvent((ChannelCreateEvent) channelCreateEvent, "Hello everybody!");
+        GenericEventImpl event = NIP28.createChannelMessageEvent((ChannelCreateEvent) channelCreateEvent, "Hello everybody!");
         Nostr.sign(event);
         Nostr.send(event);
 
         return event;
     }
 
-    private static GenericEvent hideMessage() {
+    private static GenericEventImpl hideMessage() {
         logHeader("hideMessage");
 
         var channelMessageEvent = sendChannelMessage();
 
-        GenericEvent event = NIP28.createHideMessageEvent((ChannelMessageEvent) channelMessageEvent, "Dick pic");
+        GenericEventImpl event = NIP28.createHideMessageEvent((ChannelMessageEvent) channelMessageEvent, "Dick pic");
 
         Nostr.sign(event);
         Nostr.send(event);
@@ -318,10 +318,10 @@ public class NostrApiExamples {
         return event;
     }
 
-    private static GenericEvent muteUser() {
+    private static GenericEventImpl muteUser() {
         logHeader("muteUser");
 
-        GenericEvent event = NIP28.createMuteUserEvent(RECEIVER.getPublicKey(), "Posting dick pics");
+        GenericEventImpl event = NIP28.createMuteUserEvent(RECEIVER.getPublicKey(), "Posting dick pics");
 
         Nostr.sign(event);
         Nostr.send(event);

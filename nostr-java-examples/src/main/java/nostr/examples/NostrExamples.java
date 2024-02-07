@@ -30,7 +30,7 @@ import nostr.event.impl.DeletionEvent;
 import nostr.event.impl.DirectMessageEvent;
 import nostr.event.impl.EphemeralEvent;
 import nostr.event.impl.Filters;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.HideMessageEvent;
 import nostr.event.impl.InternetIdentifierMetadataEvent;
 import nostr.event.impl.MentionsEvent;
@@ -195,7 +195,7 @@ public class NostrExamples {
         List<BaseTag> tags = new ArrayList<>();
         tags.add(rcptTag);
 
-        GenericEvent event = new TextNoteEvent(publicKeySender, tags,
+        GenericEventImpl event = new TextNoteEvent(publicKeySender, tags,
                 "Hello world, I'm here on nostr-java API!");
 
         SENDER.sign(event);
@@ -237,7 +237,7 @@ public class NostrExamples {
         List<BaseTag> tags = new ArrayList<>();
         tags.add(rcptTag);
 
-        GenericEvent event = new MentionsEvent(publicKeySender, tags, "Hello " + RECEIVER.getPublicKey().toString());
+        GenericEventImpl event = new MentionsEvent(publicKeySender, tags, "Hello " + RECEIVER.getPublicKey().toString());
         SENDER.sign(event);
 
         BaseMessage message = new EventMessage(event);
@@ -255,7 +255,7 @@ public class NostrExamples {
         List<BaseTag> tags = new ArrayList<>();
         tags.add(rcptTag);
 
-        GenericEvent event = new TextNoteEvent(publicKeySender, tags, "Hello Astral, Please delete me!");
+        GenericEventImpl event = new TextNoteEvent(publicKeySender, tags, "Hello Astral, Please delete me!");
 
         SENDER.sign(event);
         BaseMessage message = new EventMessage(event);
@@ -264,7 +264,7 @@ public class NostrExamples {
 
         tags = new ArrayList<>();
         tags.add(EventTag.builder().idEvent(event.getId()).build());
-        GenericEvent delEvent = new DeletionEvent(publicKeySender, tags);
+        GenericEventImpl delEvent = new DeletionEvent(publicKeySender, tags);
 
         SENDER.sign(delEvent);
         message = new EventMessage(delEvent);
@@ -296,7 +296,7 @@ public class NostrExamples {
         List<BaseTag> tags = new ArrayList<>();
         tags.add(rcptTag);
 
-        GenericEvent event = new EphemeralEvent(publicKeySender, Kind.EPHEMEREAL_EVENT.getValue(), tags);
+        GenericEventImpl event = new EphemeralEvent(publicKeySender, Kind.EPHEMEREAL_EVENT.getValue(), tags);
 
         SENDER.sign(event);
         BaseMessage message = new EventMessage(event);
@@ -312,7 +312,7 @@ public class NostrExamples {
         List<BaseTag> tags = new ArrayList<>();
         tags.add(rcptTag);
 
-        GenericEvent event = new TextNoteEvent(publicKeySender, tags, "Hello Astral, Please like me!");
+        GenericEventImpl event = new TextNoteEvent(publicKeySender, tags, "Hello Astral, Please like me!");
 
         SENDER.sign(event);
         BaseMessage message = new EventMessage(event);
@@ -322,7 +322,7 @@ public class NostrExamples {
         tags = new ArrayList<>();
         tags.add(EventTag.builder().idEvent(event.getId()).build());
         tags.add(PubKeyTag.builder().publicKey(publicKeySender).build());
-        GenericEvent reactionEvent = new ReactionEvent(publicKeySender, tags, Reaction.LIKE);
+        GenericEventImpl reactionEvent = new ReactionEvent(publicKeySender, tags, Reaction.LIKE);
 
         SENDER.sign(reactionEvent);
         message = new EventMessage(reactionEvent);
@@ -339,7 +339,7 @@ public class NostrExamples {
         List<BaseTag> tags = new ArrayList<>();
         tags.add(rcptTag);
 
-        GenericEvent event = new TextNoteEvent(publicKeySender, tags, "Hello Astral, Please replace me!");
+        GenericEventImpl event = new TextNoteEvent(publicKeySender, tags, "Hello Astral, Please replace me!");
 
         SENDER.sign(event);
         BaseMessage message = new EventMessage(event);
@@ -348,7 +348,7 @@ public class NostrExamples {
 
         tags = new ArrayList<>();
         tags.add(EventTag.builder().idEvent(event.getId()).build());
-        GenericEvent replaceableEvent = new ReplaceableEvent(publicKeySender, 15000, tags, "Content");
+        GenericEventImpl replaceableEvent = new ReplaceableEvent(publicKeySender, 15000, tags, "Content");
 
         SENDER.sign(replaceableEvent);
         message = new EventMessage(replaceableEvent);
@@ -372,7 +372,7 @@ public class NostrExamples {
         List<BaseTag> tags = new ArrayList<>();
         tags.add(rcptTag);
 
-        GenericEvent event = new InternetIdentifierMetadataEvent(publicKeySender, PROFILE);
+        GenericEventImpl event = new InternetIdentifierMetadataEvent(publicKeySender, PROFILE);
 
         SENDER.sign(event);
         BaseMessage message = new EventMessage(event);
@@ -400,7 +400,7 @@ public class NostrExamples {
         }
     }
 
-    private static GenericEvent createChannel() {
+    private static GenericEventImpl createChannel() {
         logHeader("createChannel");
         try {
             final PublicKey publicKeySender = SENDER.getPublicKey();
@@ -428,7 +428,7 @@ public class NostrExamples {
 
             var channel = new ChannelProfile("JNostr Channel | changed", "This is a channel to test NIP28 in nostr-java | changed", "https://cdn.pixabay.com/photo/2020/05/19/13/48/cartoon-5190942_960_720.jpg");
 
-            GenericEvent event = new ChannelMetadataEvent(publicKeySender, (ChannelCreateEvent) channelCreateEvent, channel);
+            GenericEventImpl event = new ChannelMetadataEvent(publicKeySender, (ChannelCreateEvent) channelCreateEvent, channel);
 
             SENDER.sign(event);
             var message = new EventMessage(event);
@@ -439,7 +439,7 @@ public class NostrExamples {
         }
     }
 
-    private static GenericEvent sendChannelMessage() throws NostrException {
+    private static GenericEventImpl sendChannelMessage() throws NostrException {
         logHeader("sendChannelMessage");
         final PublicKey publicKeySender = SENDER.getPublicKey();
 
@@ -455,14 +455,14 @@ public class NostrExamples {
         return event;
     }
 
-    private static GenericEvent hideMessage() throws NostrException {
+    private static GenericEventImpl hideMessage() throws NostrException {
         logHeader("hideMessage");
         try {
             final PublicKey publicKeySender = SENDER.getPublicKey();
 
             var channelMessageEvent = sendChannelMessage();
 
-            GenericEvent event = new HideMessageEvent(publicKeySender, (ChannelMessageEvent) channelMessageEvent,
+            GenericEventImpl event = new HideMessageEvent(publicKeySender, (ChannelMessageEvent) channelMessageEvent,
                     ContentReason.builder().reason("Dick pic").build().toString());
 
             SENDER.sign(event);
@@ -476,11 +476,11 @@ public class NostrExamples {
         }
     }
 
-    private static GenericEvent muteUser() {
+    private static GenericEventImpl muteUser() {
         logHeader("muteUser");
         final PublicKey publicKeySender = SENDER.getPublicKey();
 
-        GenericEvent event = new MuteUserEvent(publicKeySender, RECEIVER.getPublicKey(),
+        GenericEventImpl event = new MuteUserEvent(publicKeySender, RECEIVER.getPublicKey(),
                 ContentReason.builder().reason("Posting dick pics").build().toString());
 
         SENDER.sign(event);

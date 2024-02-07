@@ -16,7 +16,7 @@ import nostr.event.BaseEvent;
 import nostr.event.BaseMessage;
 import nostr.event.BaseTag;
 import nostr.event.impl.Filters;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.json.codec.GenericEventDecoder;
 import nostr.event.json.codec.BaseEventEncoder;
 import nostr.event.json.codec.BaseMessageDecoder;
@@ -28,7 +28,6 @@ import nostr.event.json.codec.FiltersEncoder;
 import nostr.event.json.codec.GenericTagQueryEncoder;
 import nostr.id.IIdentity;
 import nostr.id.Identity;
-import nostr.util.NostrException;
 
 /**
  * @author eric
@@ -91,7 +90,7 @@ public abstract class Nostr {
          * @param json
          * @return
          */
-        public static GenericEvent decodeEvent(@NonNull String json) {
+        public static GenericEventImpl decodeEvent(@NonNull String json) {
             final var dec = new GenericEventDecoder(json);
             return dec.decode();
         }

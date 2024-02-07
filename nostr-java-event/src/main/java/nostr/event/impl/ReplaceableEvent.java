@@ -1,45 +1,26 @@
 package nostr.event.impl;
 
-import java.util.List;
-import nostr.base.PublicKey;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.java.Log;
 import nostr.base.annotation.Event;
-import nostr.event.BaseTag;
+import nostr.event.BaseEvent;
 
 /**
- *
  * @author squirrel
  */
-@Data
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Replaceable Events", nip = 16)
-public class ReplaceableEvent extends GenericEvent {
+public class ReplaceableEvent implements GenericEvent {
+  private final static int MAX = 20000;
+  private final static int MIN = 10000;
+  private final static String OOB_MESSAGE = "Invalid kind value. Must be between %d and %d (excl)";
 
-    private final int minKind;
-    private final int maxKind;
+  public ReplaceableEvent(GenericEvent genericEvent) throws AssertionError {
+    this(new GenericEventImpl()genericEvent, MAX, MIN);
+  }
 
-    protected ReplaceableEvent() {
-        this.minKind = 0;
-        this.maxKind = 0;
-    }
-
-    public ReplaceableEvent(PublicKey sender, Integer kind, List<BaseTag> tags, String content) {
-        this(sender, kind, tags, content, 10_000, 20_000);
-    }
-
-    protected ReplaceableEvent(PublicKey sender, Integer kind, List<BaseTag> tags, String content, int minKind, int maxKind) {
-        super(sender, kind, tags, content);
-        this.minKind = minKind;
-        this.maxKind = maxKind;
-    }
-
-    @Override
-    protected void validate() {
-        if (this.getKind() >= this.minKind && this.getKind() < this.maxKind) {
-            return;
-        }
-        throw new AssertionError(String.format("Invalid kind value. Must be between %d and %d (excl)", this.minKind, this.maxKind), null);
-    }
+  public ReplaceableEvent(GenericEvent genericEvent, int maxKind, int minKind) throws AssertionError {
+//        Preconditions.
+//        assertThatThrownBy(() -> Preconditions.checkArgume
+    super(sender, kind, tags, content);
+  }
 }

@@ -12,7 +12,7 @@ import nostr.event.BaseTag;
  * @author squirrel
  */
 @Event(name = "Text Note")
-public class TextNoteEvent extends GenericEvent {
+public class TextNoteEvent extends GenericEventImpl {
 
     public TextNoteEvent(PublicKey pubKey, List<BaseTag> tags, String content) {
         super(pubKey, Kind.TEXT_NOTE, tags, content);

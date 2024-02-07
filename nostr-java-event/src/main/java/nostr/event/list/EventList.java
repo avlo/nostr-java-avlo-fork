@@ -6,7 +6,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.NonNull;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 
 /**
  *
@@ -14,13 +14,13 @@ import nostr.event.impl.GenericEvent;
  */
 @Builder
 // TODO - public class EventList extends BaseList<? extends GenericEvent>
-public class EventList extends BaseList<GenericEvent> {
+public class EventList extends BaseList<GenericEventImpl> {
 
     public EventList() {
         this(new ArrayList<>());
     }
 
-    private EventList(@NonNull List<GenericEvent> list) {
+    private EventList(@NonNull List<GenericEventImpl> list) {
         super(list);
     }
 }

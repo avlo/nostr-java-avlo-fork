@@ -13,7 +13,7 @@ import static nostr.util.NostrUtil.escapeJsonString;
  *
  */
 @Event(name = "Create Channel", nip = 28)
-public class ChannelCreateEvent extends GenericEvent {
+public class ChannelCreateEvent extends GenericEventImpl {
 
     public ChannelCreateEvent(@NonNull PublicKey pubKey, ChannelProfile profile) {
         super(pubKey, Kind.CHANNEL_CREATE, new ArrayList<>(), escapeJsonString(profile.toString()));

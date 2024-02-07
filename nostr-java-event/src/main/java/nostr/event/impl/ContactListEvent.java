@@ -16,7 +16,7 @@ import nostr.event.Kind;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Contact List and Petnames", nip = 2)
-public class ContactListEvent extends GenericEvent {
+public class ContactListEvent extends GenericEventImpl {
 
     public ContactListEvent(@NonNull PublicKey pubKey, @NonNull List<BaseTag> tags) {
         super(pubKey, Kind.CONTACT_LIST, tags);

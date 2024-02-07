@@ -13,7 +13,7 @@ import nostr.api.factory.impl.NIP23.PublishedAtTagFactory;
 import nostr.api.factory.impl.NIP23.SummaryTagFactory;
 import nostr.api.factory.impl.NIP23.TitleTagFactory;
 import nostr.event.BaseTag;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.GenericTag;
 
 /**
@@ -27,7 +27,7 @@ public class NIP23 extends Nostr {
      * @param content a text in Markdown syntax
      * @return 
      */
-    public static GenericEvent creatLongFormContentEvent(@NonNull String content) {
+    public static GenericEventImpl creatLongFormContentEvent(@NonNull String content) {
         return new LongFormContentEventFactory(content).create();
     }
     
@@ -37,7 +37,7 @@ public class NIP23 extends Nostr {
      * @param content a text in Markdown syntax
      * @return 
      */
-    public static GenericEvent creatLongFormContentEvent(@NonNull List<BaseTag> tags, @NonNull String content) {
+    public static GenericEventImpl creatLongFormContentEvent(@NonNull List<BaseTag> tags, @NonNull String content) {
         return new LongFormContentEventFactory(tags, content).create();
     }
 

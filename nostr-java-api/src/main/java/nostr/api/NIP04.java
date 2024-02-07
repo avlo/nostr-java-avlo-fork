@@ -10,7 +10,7 @@ import nostr.api.factory.impl.NIP04.DirectMessageEventFactory;
 import nostr.base.PublicKey;
 import nostr.event.BaseTag;
 import nostr.event.impl.DirectMessageEvent;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.tag.PubKeyTag;
 import nostr.id.IIdentity;
 import nostr.id.IdentityHelper;
@@ -88,10 +88,10 @@ public class NIP04 extends Nostr {
      * @throws NostrException
      */
     public static String decrypt(@NonNull IIdentity rcptId, @NonNull DirectMessageEvent dm) throws NostrException {
-        return NIP04.decrypt(rcptId, (GenericEvent) dm);
+        return NIP04.decrypt(rcptId, (GenericEventImpl) dm);
     }
 
-    public static String decrypt(@NonNull IIdentity rcptId, @NonNull GenericEvent event) throws NostrException {
+    public static String decrypt(@NonNull IIdentity rcptId, @NonNull GenericEventImpl event) throws NostrException {
         var recipient = event.getTags()
                 .stream()
                 .filter(t -> t.getCode().equalsIgnoreCase("p"))
@@ -121,7 +121,7 @@ public class NIP04 extends Nostr {
         }
     }
 
-    private static boolean amITheRecipient(@NonNull IIdentity recipient, @NonNull GenericEvent event) {
+    private static boolean amITheRecipient(@NonNull IIdentity recipient, @NonNull GenericEventImpl event) {
         var pTag = event.getTags()
                 .stream()
                 .filter(t -> t.getCode().equalsIgnoreCase("p"))

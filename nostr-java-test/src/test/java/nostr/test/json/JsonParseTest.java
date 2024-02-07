@@ -7,7 +7,7 @@ import nostr.crypto.bech32.Bech32;
 import nostr.event.BaseMessage;
 import nostr.event.BaseTag;
 import nostr.event.Marker;
-import nostr.event.impl.GenericEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.GenericTag;
 import nostr.event.json.codec.BaseMessageDecoder;
 import nostr.event.json.codec.GenericTagDecoder;
@@ -46,7 +46,7 @@ public class JsonParseTest {
 
         Assertions.assertEquals(Command.EVENT.toString(), message.getCommand());
 
-        final var event = (GenericEvent) (((EventMessage) message).getEvent());
+        final var event = (GenericEventImpl) (((EventMessage) message).getEvent());
         Assertions.assertEquals("npub17x6pn22ukq3n5yw5x9prksdyyu6ww9jle2ckpqwdprh3ey8qhe6stnpujh", ((EventMessage) message).getSubscriptionId());
         Assertions.assertEquals(1, event.getKind().intValue());
         Assertions.assertEquals(1686199583, event.getCreatedAt().longValue());
@@ -76,7 +76,7 @@ public class JsonParseTest {
         BaseMessageDecoder decoder = new BaseMessageDecoder(json);
         BaseMessage message = decoder.decode();
 
-        final var event = (GenericEvent) (((EventMessage) message).getEvent());
+        final var event = (GenericEventImpl) (((EventMessage) message).getEvent());
         var tags = event.getTags();
         for (BaseTag t : tags) {
             if (t.getCode().equalsIgnoreCase("e")) {
