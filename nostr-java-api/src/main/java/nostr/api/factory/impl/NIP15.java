@@ -4,8 +4,6 @@
  */
 package nostr.api.factory.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -16,156 +14,176 @@ import nostr.event.tag.HashtagTag;
 import nostr.event.tag.IdentifierTag;
 import nostr.id.Identity;
 
+import java.util.List;
+
 /**
- *
  * @author eric
  */
 public class NIP15 {
 
-    @Data
-    @EqualsAndHashCode(callSuper = false)
-    public static class VerifyPaymentOrShippedEventFactory extends EventFactory<VerifyPaymentOrShippedEvent> {
+  @Data
+  @EqualsAndHashCode(callSuper = false)
+  public static class VerifyPaymentOrShippedEventFactory extends EventFactory<VerifyPaymentOrShippedEvent> {
 
-        private final CustomerOrderEvent.Customer customer;
-        private final VerifyPaymentOrShippedEvent.PaymentShipmentStatus status;
+    private final CustomerOrderEvent.Customer customer;
+    private final VerifyPaymentOrShippedEvent.PaymentShipmentStatus status;
 
-        public VerifyPaymentOrShippedEventFactory(@NonNull VerifyPaymentOrShippedEvent.PaymentShipmentStatus status, @NonNull CustomerOrderEvent.Customer customer) {
-            super(status.toString());
-            this.status = status;
-            this.customer = customer;
-        }
-
-        public VerifyPaymentOrShippedEventFactory(@NonNull List<BaseTag> tags, VerifyPaymentOrShippedEvent.PaymentShipmentStatus status, @NonNull CustomerOrderEvent.Customer customer) {
-            super(tags, status.toString());
-            this.status = status;
-            this.customer = customer;
-        }
-
-        @Deprecated
-        public VerifyPaymentOrShippedEventFactory(@NonNull Identity sender, @NonNull VerifyPaymentOrShippedEvent.PaymentShipmentStatus status, @NonNull CustomerOrderEvent.Customer customer) {
-            super(sender, status.toString());
-            this.status = status;
-            this.customer = customer;
-        }
-
-        @Override
-        public VerifyPaymentOrShippedEvent create() {
-            return new VerifyPaymentOrShippedEvent(getSender(), customer, status);
-        }
-
+    public VerifyPaymentOrShippedEventFactory(@NonNull VerifyPaymentOrShippedEvent.PaymentShipmentStatus status, @NonNull CustomerOrderEvent.Customer customer) {
+      super(status.toString());
+      this.status = status;
+      this.customer = customer;
     }
 
-    @Data
-    @EqualsAndHashCode(callSuper = false)
-    public static class MerchantRequestPaymentEventFactory extends EventFactory<MerchantRequestPaymentEvent> {
-
-        private final MerchantRequestPaymentEvent.Payment payment;
-        private final CustomerOrderEvent.Customer customer;
-
-        public MerchantRequestPaymentEventFactory(@NonNull CustomerOrderEvent.Customer customer, @NonNull MerchantRequestPaymentEvent.Payment payment) {
-            super(payment.toString());
-            this.payment = payment;
-            this.customer = customer;
-        }
-
-        @Deprecated
-        public MerchantRequestPaymentEventFactory(@NonNull Identity sender, CustomerOrderEvent.Customer customer, @NonNull MerchantRequestPaymentEvent.Payment payment) {
-            super(sender, payment.toString());
-            this.payment = payment;
-            this.customer = customer;
-        }
-
-        @Override
-        public MerchantRequestPaymentEvent create() {
-            return new MerchantRequestPaymentEvent(getSender(), this.customer, payment);
-        }
+    public VerifyPaymentOrShippedEventFactory(@NonNull List<BaseTag> tags, VerifyPaymentOrShippedEvent.PaymentShipmentStatus status, @NonNull CustomerOrderEvent.Customer customer) {
+      super(tags, status.toString());
+      this.status = status;
+      this.customer = customer;
     }
 
-    @Data
-    @EqualsAndHashCode(callSuper = false)
-    public static class CustomerOrderEventFactory extends EventFactory<CustomerOrderEvent> {
-
-        private final CustomerOrderEvent.Customer customer;
-
-        public CustomerOrderEventFactory(@NonNull CustomerOrderEvent.Customer customer) {
-            super(customer.toString());
-            this.customer = customer;
-        }
-
-        @Deprecated
-        public CustomerOrderEventFactory(Identity identity, @NonNull CustomerOrderEvent.Customer customer) {
-            super(identity, customer.toString());
-            this.customer = customer;
-        }
-
-        @Override
-        public CustomerOrderEvent create() {
-            return new CustomerOrderEvent(getSender(), customer);
-        }
-
+    @Deprecated
+    public VerifyPaymentOrShippedEventFactory(@NonNull Identity sender, @NonNull VerifyPaymentOrShippedEvent.PaymentShipmentStatus status, @NonNull CustomerOrderEvent.Customer customer) {
+      super(sender, status.toString());
+      this.status = status;
+      this.customer = customer;
     }
 
-    @Data
-    @EqualsAndHashCode(callSuper = false)
-    public static class CreateOrUpdateStallEventFactory extends EventFactory<CreateOrUpdateStallEvent> {
-
-        private final CreateOrUpdateStallEvent.Stall stall;
-
-        public CreateOrUpdateStallEventFactory(@NonNull CreateOrUpdateStallEvent.Stall stall) {
-            super(stall.toString());
-            this.stall = stall;
-        }
-
-        @Deprecated
-        public CreateOrUpdateStallEventFactory(Identity identity, @NonNull CreateOrUpdateStallEvent.Stall stall) {
-            super(identity, stall.toString());
-            this.stall = stall;
-        }
-
-        @Override
-        public CreateOrUpdateStallEvent create() {
-            return new CreateOrUpdateStallEvent(getSender(), new ArrayList<>(), stall);
-        }
-
+    @Override
+    public VerifyPaymentOrShippedEvent create() {
+//            return new VerifyPaymentOrShippedEvent(getSender(), customer, status);
+      var event = new VerifyPaymentOrShippedEvent(
+          new CheckoutEvent(
+              new GenericEventImpl()), customer, status);
+      return event;
     }
 
-    @Data
-    @EqualsAndHashCode(callSuper = false)
-    public static class CreateOrUpdateProductEventFactory extends EventFactory<CreateOrUpdateProductEvent> {
+  }
 
-        private final Product product;
-        private final List<String> categories;
+  @Data
+  @EqualsAndHashCode(callSuper = false)
+  public static class MerchantRequestPaymentEventFactory extends EventFactory<MerchantRequestPaymentEvent> {
 
-        public CreateOrUpdateProductEventFactory(@NonNull Product product, List<String> categories) {
-            super(product.toString());
-            this.product = product;
-            this.categories = categories;
-        }
+    private final MerchantRequestPaymentEvent.Payment payment;
+    private final CustomerOrderEvent.Customer customer;
 
-        @Deprecated
-        public CreateOrUpdateProductEventFactory(Identity identity, @NonNull Product product, List<String> categories) {
-            super(identity, product.toString());
-            this.product = product;
-            this.categories = categories;
-        }
-
-        @Override
-        public CreateOrUpdateProductEvent create() {
-            var event = new CreateOrUpdateProductEvent(getSender(), new ArrayList<>(), product);
-            event.addTag(new IdentifierTag(product.getId()));
-            if (categories != null) {
-                categories.forEach(c -> event.addTag(new HashtagTag(c)));
-            }
-
-            return event;
-        }
-
+    public MerchantRequestPaymentEventFactory(@NonNull CustomerOrderEvent.Customer customer, @NonNull MerchantRequestPaymentEvent.Payment payment) {
+      super(payment.toString());
+      this.payment = payment;
+      this.customer = customer;
     }
 
-    public static class Kinds {
-
-        public static final Integer KIND_SET_STALL = 30017;
-        public static final Integer KIND_SET_PRODUCT = 30018;
+    @Deprecated
+    public MerchantRequestPaymentEventFactory(@NonNull Identity sender, CustomerOrderEvent.Customer customer, @NonNull MerchantRequestPaymentEvent.Payment payment) {
+      super(sender, payment.toString());
+      this.payment = payment;
+      this.customer = customer;
     }
+
+    @Override
+    public MerchantRequestPaymentEvent create() {
+      return new MerchantRequestPaymentEvent(getSender(), this.customer, payment);
+    }
+  }
+
+  @Data
+  @EqualsAndHashCode(callSuper = false)
+  public static class CustomerOrderEventFactory extends EventFactory<CustomerOrderEvent> {
+
+    private final CustomerOrderEvent.Customer customer;
+
+    public CustomerOrderEventFactory(@NonNull CustomerOrderEvent.Customer customer) {
+      super(customer.toString());
+      this.customer = customer;
+    }
+
+    @Deprecated
+    public CustomerOrderEventFactory(Identity identity, @NonNull CustomerOrderEvent.Customer customer) {
+      super(identity, customer.toString());
+      this.customer = customer;
+    }
+
+    @Override
+    public CustomerOrderEvent create() {
+//            return new CustomerOrderEvent(getSender(), customer);
+      var event = new CustomerOrderEvent(new GenericEventImpl());
+      event.setPubKey(getSender());
+      event.setCustomer(customer);
+      return event;
+    }
+
+  }
+
+  @Data
+  @EqualsAndHashCode(callSuper = false)
+  public static class CreateOrUpdateStallEventFactory extends EventFactory<CreateOrUpdateStallEvent> {
+
+    private final CreateOrUpdateStallEvent.Stall stall;
+
+    public CreateOrUpdateStallEventFactory(@NonNull CreateOrUpdateStallEvent.Stall stall) {
+      super(stall.toString());
+      this.stall = stall;
+    }
+
+    @Deprecated
+    public CreateOrUpdateStallEventFactory(Identity identity, @NonNull CreateOrUpdateStallEvent.Stall stall) {
+      super(identity, stall.toString());
+      this.stall = stall;
+    }
+
+    @Override
+    public CreateOrUpdateStallEvent create() {
+//            return new CreateOrUpdateStallEvent(getSender(), new ArrayList<>(), stall);
+      var event = new CreateOrUpdateStallEvent(
+          new NostrMarketplaceEvent(
+              new GenericEventImpl()), stall);
+      event.setPubKey(getSender());
+      return event;
+    }
+
+  }
+
+  @Data
+  @EqualsAndHashCode(callSuper = false)
+  public static class CreateOrUpdateProductEventFactory extends EventFactory<CreateOrUpdateProductEvent> {
+
+    private final Product product;
+    private final List<String> categories;
+
+    public CreateOrUpdateProductEventFactory(@NonNull Product product, List<String> categories) {
+      super(product.toString());
+      this.product = product;
+      this.categories = categories;
+    }
+
+    @Deprecated
+    public CreateOrUpdateProductEventFactory(Identity identity, @NonNull Product product, List<String> categories) {
+      super(identity, product.toString());
+      this.product = product;
+      this.categories = categories;
+    }
+
+    @Override
+    public CreateOrUpdateProductEvent create() {
+      var event = new CreateOrUpdateProductEvent(
+          new NostrMarketplaceEvent(
+              new ParameterizedReplaceableEvent(
+                  new ReplaceableEvent(
+                      new GenericEventImpl()))));
+      event.setPubKey(getSender());
+      event.setContent(product.toString());
+      event.addTag(new IdentifierTag(product.getId()));
+      if (categories != null) {
+        categories.forEach(c -> event.addTag(new HashtagTag(c)));
+      }
+
+      return event;
+    }
+
+  }
+
+  public static class Kinds {
+
+    public static final Integer KIND_SET_STALL = 30017;
+    public static final Integer KIND_SET_PRODUCT = 30018;
+  }
 
 }

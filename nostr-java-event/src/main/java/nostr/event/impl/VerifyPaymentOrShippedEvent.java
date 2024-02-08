@@ -16,13 +16,18 @@ import nostr.event.impl.CustomerOrderEvent.Customer;
  *
  * @author eric
  */
-@Data
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "", nip = 15)
-public class VerifyPaymentOrShippedEvent extends CheckoutEvent {
+public class VerifyPaymentOrShippedEvent extends EventDecorator {
+    private final GenericEvent genericEvent;
+    private final Customer customer;
+    private final PaymentShipmentStatus status;
 
-    public VerifyPaymentOrShippedEvent(PublicKey sender, Customer customer, PaymentShipmentStatus status) {
-        super(sender, customer.getContact().getPublicKey(), status);
+    public VerifyPaymentOrShippedEvent(GenericEvent genericEvent, Customer customer, PaymentShipmentStatus status) {
+        super(genericEvent);
+        this.genericEvent = genericEvent;
+        this.customer = customer;
+        this.status = status;
     }
     
     @Getter
@@ -35,7 +40,7 @@ public class VerifyPaymentOrShippedEvent extends CheckoutEvent {
         private final String id;
         
         @JsonProperty
-        private MessageType type;
+        private CheckoutEvent.MessageType type;
         
         @JsonProperty
         private String message;

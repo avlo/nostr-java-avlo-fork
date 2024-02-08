@@ -10,8 +10,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import nostr.api.factory.EventFactory;
 import nostr.event.BaseTag;
-import nostr.event.impl.EphemeralEvent;
-import nostr.event.impl.ReplaceableEvent;
+import nostr.event.Kind;
+import nostr.event.impl.*;
 import nostr.id.Identity;
 
 /**
@@ -48,7 +48,13 @@ public class NIP16 {
 
         @Override
         public ReplaceableEvent create() {
-            return new ReplaceableEvent(getSender(), kind, getTags(), getContent());
+            var event = new ReplaceableEvent(
+                new GenericEventImpl());
+            event.setPubKey(getSender());
+            event.setKind(Kind.valueOf(kind));
+            event.setTags(getTags());
+            event.setContent(getContent());
+            return event;
         }
     }
 

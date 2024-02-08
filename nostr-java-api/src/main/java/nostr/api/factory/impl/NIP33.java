@@ -13,7 +13,10 @@ import nostr.api.factory.EventFactory;
 import nostr.base.PublicKey;
 import nostr.base.Relay;
 import nostr.event.BaseTag;
+import nostr.event.Kind;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.ParameterizedReplaceableEvent;
+import nostr.event.impl.ReplaceableEvent;
 import nostr.event.tag.AddressTag;
 import nostr.event.tag.IdentifierTag;
 import nostr.id.Identity;
@@ -52,7 +55,14 @@ public class NIP33 {
 
         @Override
         public ParameterizedReplaceableEvent create() {
-            return new ParameterizedReplaceableEvent(getSender(), kind, getTags(), getContent());
+            var event = new ParameterizedReplaceableEvent(
+                new ReplaceableEvent(
+                    new GenericEventImpl()));
+            event.setPubKey(getSender());
+            event.setKind(Kind.valueOf(kind));
+            event.setTags(getTags());
+            event.setContent(getContent());
+            return event;
         }        
     }
     

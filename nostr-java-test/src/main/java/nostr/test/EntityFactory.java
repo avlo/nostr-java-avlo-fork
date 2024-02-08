@@ -57,8 +57,12 @@ public class EntityFactory {
         public static DirectMessageEvent createDirectMessageEvent(PublicKey senderPublicKey, PublicKey rcptPublicKey, String content) {
             List<BaseTag> tagList = new ArrayList<>();
             tagList.add(PubKeyTag.builder().publicKey(rcptPublicKey).petName("uq7yfx3l").build());
-            DirectMessageEvent event = new DirectMessageEvent(senderPublicKey, tagList, content);
-            event.update();
+            DirectMessageEvent event = new DirectMessageEvent(
+                new GenericEventImpl());
+            event.setPubKey(senderPublicKey);
+            event.setTags(tagList);
+            event.setContent(content);
+            event.setRecipientPublicKey(rcptPublicKey);
             return event;
         }
 
@@ -97,12 +101,23 @@ public class EntityFactory {
         public static ReactionEvent createReactionEvent(PublicKey publicKey, GenericEventImpl original) {
             List<BaseTag> tagList = new ArrayList<>();
             tagList.add(EventTag.builder().idEvent(original.getId()).build());
-            return new ReactionEvent(publicKey, tagList, Reaction.LIKE);
+//            return new ReactionEvent(publicKey, tagList, Reaction.LIKE);
+            var event= new ReactionEvent(
+                new GenericEventImpl());
+            event.setPubKey(publicKey);
+            event.setTags(tagList);
+            event.setReaction(Reaction.LIKE);
+            return event;
         }
 
         public static ReplaceableEvent createReplaceableEvent(PublicKey publicKey) {
             String content = generateRamdomAlpha(32);
-            return new ReplaceableEvent(publicKey, 15000, new ArrayList<>(), content);
+            var event = new ReplaceableEvent(
+                new GenericEventImpl());
+            event.setPubKey(publicKey);
+            event.setKind(Kind.valueOf(15000));
+            event.setContent(content);
+            return event;
         }
 
         public static TextNoteEvent createTextNoteEvent(PublicKey publicKey) {

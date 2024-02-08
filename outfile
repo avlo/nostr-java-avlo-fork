@@ -1,0 +1,964 @@
+diff --git a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP04.java b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP04.java
+index a50baae..a303151 100644
+--- a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP04.java
++++ b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP04.java
+@@ -12,6 +12,7 @@ import nostr.api.factory.EventFactory;
+ import nostr.base.PublicKey;
+ import nostr.event.BaseTag;
+ import nostr.event.impl.DirectMessageEvent;
++import nostr.event.impl.GenericEventImpl;
+ import nostr.id.Identity;
+ 
+ /**
+@@ -49,7 +50,12 @@ public class NIP04 {
+ 
+         @Override
+         public DirectMessageEvent create() {
+-            return new DirectMessageEvent(getSender(), recipient, getContent());
++            var event = new DirectMessageEvent(
++                new GenericEventImpl());
++            event.setPubKey(getSender());
++            event.setRecipientPublicKey(recipient);
++            event.setContent(getContent());
++            return event;
+         }
+     }
+ 
+diff --git a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP15.java b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP15.java
+index e253bd1..3ad8a0b 100644
+--- a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP15.java
++++ b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP15.java
+@@ -4,8 +4,6 @@
+  */
+ package nostr.api.factory.impl;
+ 
+-import java.util.ArrayList;
+-import java.util.List;
+ import lombok.Data;
+ import lombok.EqualsAndHashCode;
+ import lombok.NonNull;
+@@ -16,8 +14,9 @@ import nostr.event.tag.HashtagTag;
+ import nostr.event.tag.IdentifierTag;
+ import nostr.id.Identity;
+ 
++import java.util.List;
++
+ /**
+- *
+  * @author eric
+  */
+ public class NIP15 {
+@@ -50,7 +49,11 @@ public class NIP15 {
+ 
+     @Override
+     public VerifyPaymentOrShippedEvent create() {
+-            return new VerifyPaymentOrShippedEvent(getSender(), customer, status);
++//            return new VerifyPaymentOrShippedEvent(getSender(), customer, status);
++      var event = new VerifyPaymentOrShippedEvent(
++          new CheckoutEvent(
++              new GenericEventImpl()), customer, status);
++      return event;
+     }
+ 
+   }
+@@ -100,7 +103,11 @@ public class NIP15 {
+ 
+     @Override
+     public CustomerOrderEvent create() {
+-            return new CustomerOrderEvent(getSender(), customer);
++//            return new CustomerOrderEvent(getSender(), customer);
++      var event = new CustomerOrderEvent(new GenericEventImpl());
++      event.setPubKey(getSender());
++      event.setCustomer(customer);
++      return event;
+     }
+ 
+   }
+@@ -124,7 +131,12 @@ public class NIP15 {
+ 
+     @Override
+     public CreateOrUpdateStallEvent create() {
+-            return new CreateOrUpdateStallEvent(getSender(), new ArrayList<>(), stall);
++//            return new CreateOrUpdateStallEvent(getSender(), new ArrayList<>(), stall);
++      var event = new CreateOrUpdateStallEvent(
++          new NostrMarketplaceEvent(
++              new GenericEventImpl()), stall);
++      event.setPubKey(getSender());
++      return event;
+     }
+ 
+   }
+@@ -151,7 +163,13 @@ public class NIP15 {
+ 
+     @Override
+     public CreateOrUpdateProductEvent create() {
+-            var event = new CreateOrUpdateProductEvent(getSender(), new ArrayList<>(), product);
++      var event = new CreateOrUpdateProductEvent(
++          new NostrMarketplaceEvent(
++              new ParameterizedReplaceableEvent(
++                  new ReplaceableEvent(
++                      new GenericEventImpl()))));
++      event.setPubKey(getSender());
++      event.setContent(product.toString());
+       event.addTag(new IdentifierTag(product.getId()));
+       if (categories != null) {
+         categories.forEach(c -> event.addTag(new HashtagTag(c)));
+diff --git a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP16.java b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP16.java
+index d560c6e..5328e1b 100644
+--- a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP16.java
++++ b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP16.java
+@@ -10,8 +10,8 @@ import lombok.EqualsAndHashCode;
+ import lombok.NonNull;
+ import nostr.api.factory.EventFactory;
+ import nostr.event.BaseTag;
+-import nostr.event.impl.EphemeralEvent;
+-import nostr.event.impl.ReplaceableEvent;
++import nostr.event.Kind;
++import nostr.event.impl.*;
+ import nostr.id.Identity;
+ 
+ /**
+@@ -48,7 +48,13 @@ public class NIP16 {
+ 
+         @Override
+         public ReplaceableEvent create() {
+-            return new ReplaceableEvent(getSender(), kind, getTags(), getContent());
++            var event = new ReplaceableEvent(
++                new GenericEventImpl());
++            event.setPubKey(getSender());
++            event.setKind(Kind.valueOf(kind));
++            event.setTags(getTags());
++            event.setContent(getContent());
++            return event;
+         }
+     }
+ 
+diff --git a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP25.java b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP25.java
+index 706e8b1..66f746e 100644
+--- a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP25.java
++++ b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP25.java
+@@ -83,9 +83,20 @@ public class NIP25 {
+             var reaction = getContent();
+             var url = getEmoji();
+ 
+-            return event != null ? 
+-                    new ReactionEvent(getSender(), event, reaction, url) : 
+-                    new ReactionEvent(getSender(), getTags(), reaction, url);            
++            var nonNullEvent = new ReactionEvent(
++                new GenericEventImpl());
++            nonNullEvent.setEmoji(url);
++            nonNullEvent.setPubKey(getSender());
++            nonNullEvent.setContent(reaction);
++
++            var nullEvent = new ReactionEvent(
++                new GenericEventImpl());
++            nonNullEvent.setEmoji(url);
++            nonNullEvent.setTags(getTags());
++            nonNullEvent.setContent(reaction);
++
++            return event != null ? nonNullEvent : nullEvent;
++
+         }
+     }
+ 
+diff --git a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP28.java b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP28.java
+index 394d63e..ffa11be 100644
+--- a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP28.java
++++ b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP28.java
+@@ -12,11 +12,7 @@ import nostr.base.ChannelProfile;
+ import nostr.base.ContentReason;
+ import nostr.base.PublicKey;
+ import nostr.base.Relay;
+-import nostr.event.impl.ChannelCreateEvent;
+-import nostr.event.impl.ChannelMessageEvent;
+-import nostr.event.impl.ChannelMetadataEvent;
+-import nostr.event.impl.HideMessageEvent;
+-import nostr.event.impl.MuteUserEvent;
++import nostr.event.impl.*;
+ import nostr.id.Identity;
+ 
+ import static nostr.util.NostrUtil.escapeJsonString;
+@@ -90,7 +86,10 @@ public class NIP28 {
+ 
+         @Override
+         public ChannelMetadataEvent create() {
+-            return new ChannelMetadataEvent(getSender(), channelCreateEvent, profile);
++            var event = new ChannelMetadataEvent(
++                new ChannelCreateEvent(
++                    new GenericEventImpl()), profile);
++            return event;
+         }
+     }
+ 
+diff --git a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP33.java b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP33.java
+index f5fc3ef..8b8ce03 100644
+--- a/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP33.java
++++ b/nostr-java-api/src/main/java/nostr/api/factory/impl/NIP33.java
+@@ -13,7 +13,10 @@ import nostr.api.factory.EventFactory;
+ import nostr.base.PublicKey;
+ import nostr.base.Relay;
+ import nostr.event.BaseTag;
++import nostr.event.Kind;
++import nostr.event.impl.GenericEventImpl;
+ import nostr.event.impl.ParameterizedReplaceableEvent;
++import nostr.event.impl.ReplaceableEvent;
+ import nostr.event.tag.AddressTag;
+ import nostr.event.tag.IdentifierTag;
+ import nostr.id.Identity;
+@@ -52,7 +55,14 @@ public class NIP33 {
+ 
+         @Override
+         public ParameterizedReplaceableEvent create() {
+-            return new ParameterizedReplaceableEvent(getSender(), kind, getTags(), getContent());
++            var event = new ParameterizedReplaceableEvent(
++                new ReplaceableEvent(
++                    new GenericEventImpl()));
++            event.setPubKey(getSender());
++            event.setKind(Kind.valueOf(kind));
++            event.setTags(getTags());
++            event.setContent(getContent());
++            return event;
+         }        
+     }
+     
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/ChannelCreateEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/ChannelCreateEvent.java
+index 6620643..bcdfb32 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/ChannelCreateEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/ChannelCreateEvent.java
+@@ -1,21 +1,17 @@
+ package nostr.event.impl;
+ 
+-import java.util.ArrayList;
+-import lombok.NonNull;
+-import nostr.base.ChannelProfile;
+-import nostr.base.PublicKey;
+ import nostr.base.annotation.Event;
+-import nostr.event.Kind;
+-import static nostr.util.NostrUtil.escapeJsonString;
+ 
+ /**
+  * @author guilhermegps
+- *
+  */
+ @Event(name = "Create Channel", nip = 28)
+-public class ChannelCreateEvent extends GenericEventImpl {
++public class ChannelCreateEvent extends EventDecorator {
++  private final GenericEvent genericEvent;
+ 
+-    public ChannelCreateEvent(@NonNull PublicKey pubKey, ChannelProfile profile) {
+-        super(pubKey, Kind.CHANNEL_CREATE, new ArrayList<>(), escapeJsonString(profile.toString()));
++  public ChannelCreateEventt(GenericEvent genericEvent) {
++    super(genericEvent);
++    this.genericEvent = genericEvent;
+   }
++//        super(pubKey, Kind.CHANNEL_CREATE, new ArrayList<>(), escapeJsonString(profile.toString()));
+ }
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/ChannelMetadataEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/ChannelMetadataEvent.java
+index 2e9dfd9..80f4b35 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/ChannelMetadataEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/ChannelMetadataEvent.java
+@@ -1,28 +1,30 @@
+ package nostr.event.impl;
+ 
+-import java.util.ArrayList;
+-import lombok.NonNull;
+ import nostr.base.ChannelProfile;
+-import nostr.base.PublicKey;
+ import nostr.base.annotation.Event;
+ import nostr.event.Kind;
+-import nostr.event.tag.EventTag;
+-import static nostr.util.NostrUtil.escapeJsonString;
+ 
+ /**
+  * @author guilhermegps
+- *
+  */
+ @Event(name = "Channel Metadata", nip = 28)
+-public class ChannelMetadataEvent extends GenericEventImpl {
++public class ChannelMetadataEvent extends EventDecorator {
++  private final GenericEvent genericEvent;
++  private final ChannelProfile channelProfile;
+ 
+-    public ChannelMetadataEvent(@NonNull PublicKey pubKey, @NonNull ChannelCreateEvent event, ChannelProfile profile) {
+-        super(pubKey, Kind.CHANNEL_METADATA, new ArrayList<>(), escapeJsonString(profile.toString()));
+-        this.addTag(EventTag.builder().idEvent(event.getId()).build());
++  public ChannelMetadataEvent(GenericEvent genericEvent, ChannelProfile channelProfile) {
++    super(genericEvent);
++    this.genericEvent = genericEvent;
++    this.channelProfile = channelProfile;
++    this.genericEvent.setKind(Kind.CHANNEL_METADATA);
+   }
+ 
+-    public ChannelMetadataEvent(@NonNull PublicKey pubKey, @NonNull EventTag channelCreateEventTag, ChannelProfile profile) {
+-        super(pubKey, Kind.CHANNEL_METADATA, new ArrayList<>(), escapeJsonString(profile.toString()));
+-        this.addTag(channelCreateEventTag);
+-    }
++//    public ChannelMetadataEvent(@NonNull PublicKey pubKey, @NonNull ChannelCreateEvent event, ChannelProfile profile) {
++//        super(pubKey, Kind.CHANNEL_METADATA, new ArrayList<>(), escapeJsonString(profile.toString()));
++//        this.addTag(EventTag.builder().idEvent(event.getId()).build());
++//    }
++//
++//    public ChannelMetadataEvent(@NonNull PublicKey pubKey, @NonNull EventTag channelCreateEventTag, ChannelProfile profile) {
++//        super(pubKey, Kind.CHANNEL_METADATA, new ArrayList<>(), escapeJsonString(profile.toString()));
++//        this.addTag(channelCreateEventTag);
+ }
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/CheckoutEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/CheckoutEvent.java
+index 5c764d6..b357ce2 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/CheckoutEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/CheckoutEvent.java
+@@ -1,26 +1,21 @@
+ package nostr.event.impl;
+ 
+ import com.fasterxml.jackson.annotation.JsonValue;
+-import lombok.Data;
+ import lombok.EqualsAndHashCode;
+ import lombok.Getter;
+-import nostr.base.PublicKey;
+ import nostr.base.annotation.Event;
+-import nostr.event.IContent;
+ 
+ /**
+- *
+  * @author eric
+  */
+-@Data
+ @EqualsAndHashCode(callSuper = false)
+ @Event(name = "", nip = 15)
+-public abstract class CheckoutEvent extends DirectMessageEvent {
++public class CheckoutEvent extends EventDecorator {
++  private final GenericEvent genericEvent;
+ 
+-    protected CheckoutEvent() {}
+-
+-    public CheckoutEvent(PublicKey sender, PublicKey recipient, IContent content) {
+-        super(sender, recipient, content.toString());
++  public CheckoutEvent(GenericEvent genericEvent) {
++    super(genericEvent);
++    this.genericEvent = genericEvent;
+   }
+ 
+   public enum MessageType {
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/ClassifiedListingEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/ClassifiedListingEvent.java
+index 45cd936..ba31c7d 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/ClassifiedListingEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/ClassifiedListingEvent.java
+@@ -1,27 +1,21 @@
+ package nostr.event.impl;
+ 
+-import lombok.Data;
+ import lombok.EqualsAndHashCode;
+ import lombok.Getter;
+ import lombok.Setter;
+-import nostr.base.IEvent;
+-import nostr.base.PublicKey;
+ import nostr.base.annotation.Event;
+ import nostr.event.AbstractEventContent;
+-import nostr.event.BaseTag;
+-import nostr.event.IContent;
+ 
+ import java.util.List;
+ 
+-@Data
+ @EqualsAndHashCode(callSuper = false)
+ @Event(name = "ClassifiedListingEvent", nip = 99)
+-public class ClassifiedListingEvent extends ParameterizedReplaceableEvent {
+-    protected ClassifiedListingEvent() {
+-        super();
+-    }
+-    public ClassifiedListingEvent(PublicKey sender, Integer kind, List<BaseTag> tags, IContent content) {
+-        super(sender, kind, tags, content.toString());
++public class ClassifiedListingEvent extends EventDecorator {
++  private final GenericEvent genericEvent;
++
++  protected ClassifiedListingEvent(GenericEvent genericEvent) {
++    super(genericEvent);
++    this.genericEvent = genericEvent;
+   }
+ 
+   @Getter
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/CreateOrUpdateProductEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/CreateOrUpdateProductEvent.java
+index f31c4bc..9fc74ee 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/CreateOrUpdateProductEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/CreateOrUpdateProductEvent.java
+@@ -1,25 +1,18 @@
+ package nostr.event.impl;
+ 
+ import lombok.EqualsAndHashCode;
+-import lombok.NonNull;
+-import nostr.base.PublicKey;
+ import nostr.base.annotation.Event;
+-import nostr.event.BaseTag;
+-import nostr.event.IContent;
+-
+-import java.util.List;
+ 
+ /**
+  * @author eric
+  */
+ @EqualsAndHashCode(callSuper = false)
+ @Event(name = "", nip = 15)
+-public class CreateOrUpdateProductEvent extends GenericEventImpl {
+-  NostrMarketplaceEvent nostrMarketplaceEvent;
+-  public CreateOrUpdateProductEvent(PublicKey sender, List<BaseTag> tags, @NonNull IContent product) {
+-    nostrMarketplaceEvent = new NostrMarketplaceEvent(
+-            new ParameterizedReplaceableEvent(
+-                new ReplaceableEvent(
+-                    new GenericEventImpl(sender, 30018, tags, product.toString()))));
++public class CreateOrUpdateProductEvent extends EventDecorator {
++  private final GenericEvent genericEvent;
++
++  public CreateOrUpdateProductEvent(GenericEvent genericEvent) {
++    super(genericEvent);
++    this.genericEvent = genericEvent;
+   }
+ }
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/CreateOrUpdateStallEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/CreateOrUpdateStallEvent.java
+index e862e0a..15227f0 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/CreateOrUpdateStallEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/CreateOrUpdateStallEvent.java
+@@ -18,17 +18,17 @@ import nostr.event.BaseTag;
+  *
+  * @author eric
+  */
+-@Data
+ @EqualsAndHashCode(callSuper = false)
+ @Event(name = "Create or update a stall", nip = 15)
+-public class CreateOrUpdateStallEvent extends NostrMarketplaceEvent {
+-
+-    protected CreateOrUpdateStallEvent() {
+-        super();
+-    }
+-
+-    public CreateOrUpdateStallEvent(PublicKey sender, List<BaseTag> tags, @NonNull Stall stall) {
+-        super(sender, 30017, tags, stall);
++public class CreateOrUpdateStallEvent extends EventDecorator {
++    private final GenericEvent genericEvent;
++    private final Stall stall;
++
++    public CreateOrUpdateStallEvent(GenericEvent genericEvent, Stall stall) {
++        super(genericEvent);
++        this.genericEvent = genericEvent;
++        this.stall = stall;
++//        super(sender, 30017, tags, stall);
+     }
+ 
+     @Getter
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/CustomerOrderEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/CustomerOrderEvent.java
+index 63e5412..e7eae8a 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/CustomerOrderEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/CustomerOrderEvent.java
+@@ -2,35 +2,31 @@ package nostr.event.impl;
+ 
+ import com.fasterxml.jackson.annotation.JsonProperty;
+ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+-import java.util.ArrayList;
+-import java.util.List;
+-import java.util.UUID;
+-import lombok.Data;
+-import lombok.EqualsAndHashCode;
+-import lombok.Getter;
+-import lombok.NoArgsConstructor;
+-import lombok.NonNull;
+-import lombok.Setter;
+-import lombok.ToString;
++import lombok.*;
+ import nostr.base.PublicKey;
+ import nostr.base.annotation.Event;
+ import nostr.event.AbstractEventContent;
+ import nostr.event.json.serializer.ItemSerializer;
+ 
++import java.util.ArrayList;
++import java.util.List;
++import java.util.UUID;
++
+ /**
+- *
+  * @author eric
+  */
+-@Data
++@Getter
++@Setter
+ @EqualsAndHashCode(callSuper = false)
+ @Event(name = "", nip = 15)
+-public class CustomerOrderEvent extends CheckoutEvent {
+-
+-    private CustomerOrderEvent() {
+-        super();
+-    }
+-    public CustomerOrderEvent(PublicKey sender, @NonNull Customer customer) {
+-        super(sender, customer.getContact().getPublicKey(), customer);
++public class CustomerOrderEvent extends EventDecorator {
++  private final GenericEvent genericEvent;
++  private CustomerOrderEvent.Customer customer;
++
++  public CustomerOrderEvent(GenericEvent genericEvent) {
++//        super(sender, customer.getContact().getPublicKey(), customer);
++    super(genericEvent);
++    this.genericEvent = genericEvent;
+   }
+ 
+   @Getter
+@@ -43,7 +39,7 @@ public class CustomerOrderEvent extends CheckoutEvent {
+     private final String id;
+ 
+     @JsonProperty
+-        private MessageType type;
++    private CheckoutEvent.MessageType type;
+ 
+     @JsonProperty
+     private String name;
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/DirectMessageEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/DirectMessageEvent.java
+index 2cf902b..a938f24 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/DirectMessageEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/DirectMessageEvent.java
+@@ -1,29 +1,38 @@
+ package nostr.event.impl;
+ 
+-import java.util.List;
++import lombok.Getter;
++import lombok.Setter;
+ import nostr.base.PublicKey;
+-import nostr.event.Kind;
+ import nostr.base.annotation.Event;
+ import nostr.event.BaseTag;
++import nostr.event.Kind;
+ import nostr.event.tag.PubKeyTag;
+ 
++import java.util.List;
++
+ /**
+- *
+  * @author squirrel
+  */
++@Getter
++@Setter
+ @Event(name = "Encrypted Direct Message", nip = 4)
+-public class DirectMessageEvent extends GenericEventImpl {
+-
+-    protected DirectMessageEvent() {
+-    }
++public class DirectMessageEvent extends EventDecorator {
++  private final GenericEvent genericEvent;
++  private PublicKey recipientPublicKey;
+ 
+-    public DirectMessageEvent(PublicKey sender, List<BaseTag> tags, String content) {
+-        super(sender, Kind.ENCRYPTED_DIRECT_MESSAGE, tags, content);
++  public DirectMessageEvent(GenericEvent genericEvent) {
++    super(genericEvent);
++    this.genericEvent = genericEvent;
++    this.genericEvent.setKind(Kind.ENCRYPTED_DIRECT_MESSAGE);
+   }
+ 
+-    public DirectMessageEvent(PublicKey sender, PublicKey recipient, String content) {
+-        super(sender, Kind.ENCRYPTED_DIRECT_MESSAGE);
+-        this.setContent(content);        
+-        this.addTag(PubKeyTag.builder().publicKey(recipient).build());        
+-    }
++//  public DirectMessageEvent(PublicKey sender, List<BaseTag> tags, String content) {
++//    super(sender, Kind.ENCRYPTED_DIRECT_MESSAGE, tags, content);
++//  }
++//
++//  public DirectMessageEvent(PublicKey sender, PublicKey recipient, String content) {
++//    super(sender, Kind.ENCRYPTED_DIRECT_MESSAGE);
++//    this.setContent(content);
++//    this.addTag(PubKeyTag.builder().publicKey(recipient).build());
++//  }
+ }
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/GenericEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/GenericEvent.java
+index ba60fd0..d549e33 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/GenericEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/GenericEvent.java
+@@ -1,18 +1,35 @@
+ package nostr.event.impl;
+ 
++import nostr.base.IGenericElement;
++import nostr.base.ISignable;
+ import nostr.base.PublicKey;
+ import nostr.base.Signature;
+ import nostr.event.BaseEvent;
+ import nostr.event.BaseTag;
++import nostr.event.Kind;
+ 
+ import java.util.List;
+ 
+-public interface GenericEvent extends BaseEvent {
++public interface GenericEvent extends BaseEvent, ISignable, IGenericElement {
+   PublicKey getPubKey();
++  void setPubKey(PublicKey getPubKey);
++
+   Long getCreatedAt();
+-  Integer getKind();
++  void setCreatedAt(Long createdAt);
++
++  Kind getKind();
++  void setKind(Kind kind);
++
+   List<BaseTag> getTags();
++  void setTags(List<BaseTag> tags);
++  void addTag(BaseTag tag);
++
+   String getContent();
++  void setContent(String content);
++
+   Signature getSignature();
++  void setSignature(Signature signature);
++
+   Integer getNip();
++  void setNip(Integer nip);
+ }
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/GenericEventImpl.java b/nostr-java-event/src/main/java/nostr/event/impl/GenericEventImpl.java
+index 347192e..eb6637c 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/GenericEventImpl.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/GenericEventImpl.java
+@@ -28,6 +28,7 @@ import java.util.List;
+  * @author squirrel
+  */
+ @Getter
++@Setter
+ @EqualsAndHashCode
+ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElement {
+   @Key
+@@ -77,17 +78,6 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
+   @EqualsAndHashCode.Exclude
+   private List<ElementAttribute> attributes;
+ 
+-//  public GenericEventImpl(@NonNull PublicKey pubKey, @NonNull Integer kind, @NonNull List<BaseTag> tags, String content) {
+-//    this.pubKey = pubKey;
+-//    this.kind = kind;
+-//    this.tags = tags;
+-//    this.content = content;
+-//    this.attributes = new ArrayList<>();
+-//    // Update parents
+-//    updateTagsParents(tags);
+-//  }
+-
+-
+   @Override
+   public String toBech32() {
+     if (!isSigned()) {
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/NostrMarketplaceEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/NostrMarketplaceEvent.java
+index 4467098..72e0aa4 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/NostrMarketplaceEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/NostrMarketplaceEvent.java
+@@ -1,20 +1,18 @@
+ package nostr.event.impl;
+ 
+-import lombok.*;
+-import nostr.base.PublicKey;
++import lombok.EqualsAndHashCode;
+ import nostr.base.annotation.Event;
+-import nostr.event.BaseTag;
+-import nostr.event.IContent;
+-
+-import java.util.List;
+ 
+ /**
+  * @author eric
+  */
+ @EqualsAndHashCode(callSuper = false)
+ @Event(name = "", nip = 15)
+-public class NostrMarketplaceEvent extends GenericEventImpl {
+-  public NostrMarketplaceEvent(PublicKey sender, Integer kind, List<BaseTag> tags, IContent content) {
+-    super(new ParameterizedReplaceableEvent(sender, kind, tags, content.toString()));
++public class NostrMarketplaceEvent extends EventDecorator {
++  private final GenericEvent genericEvent;
++
++  public NostrMarketplaceEvent(GenericEvent genericEvent) {
++    super(genericEvent);
++    this.genericEvent = genericEvent;
+   }
+ }
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/ParameterizedReplaceableEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/ParameterizedReplaceableEvent.java
+index 1f9bf41..4ae0dd3 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/ParameterizedReplaceableEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/ParameterizedReplaceableEvent.java
+@@ -1,19 +1,18 @@
+ package nostr.event.impl;
+ 
+ import lombok.EqualsAndHashCode;
+-import nostr.base.PublicKey;
+ import nostr.base.annotation.Event;
+-import nostr.event.BaseTag;
+-
+-import java.util.List;
+ 
+ /**
+  * @author eric
+  */
+ @EqualsAndHashCode(callSuper = false)
+ @Event(name = "Parameterized Replaceable Events", nip = 33)
+-public class ParameterizedReplaceableEvent extends GenericEventImpl {
+-  public ParameterizedReplaceableEvent(PublicKey sender, Integer kind, List<BaseTag> tags, String content) {
+-    new ReplaceableEvent(new GenericEventImpl(sender, kind, tags, content), 30_000, 40_000));
++public class ParameterizedReplaceableEvent extends EventDecorator {
++  private final GenericEvent genericEvent;
++
++  public ParameterizedReplaceableEvent(GenericEvent genericEvent) {
++    super(genericEvent);
++    this.genericEvent = genericEvent;
+   }
+ }
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/ReactionEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/ReactionEvent.java
+index 140fb70..a368f86 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/ReactionEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/ReactionEvent.java
+@@ -1,50 +1,53 @@
+ package nostr.event.impl;
+ 
+-import java.net.URL;
+-import java.util.ArrayList;
+-import java.util.List;
+-import nostr.event.Kind;
+-import nostr.base.PublicKey;
+-import nostr.event.Reaction;
+ import lombok.Data;
+ import lombok.EqualsAndHashCode;
+-import lombok.NonNull;
++import lombok.Getter;
++import lombok.Setter;
+ import nostr.base.ElementAttribute;
+ import nostr.base.annotation.Event;
+ import nostr.event.BaseTag;
+-import nostr.event.tag.EventTag;
++import nostr.event.Reaction;
++
++import java.net.URL;
++import java.util.ArrayList;
++import java.util.List;
+ 
+ /**
+- *
+  * @author squirrel
+  */
+-@Data
++@Getter
++@Setter
+ @EqualsAndHashCode(callSuper = false)
+ @Event(name = "Reactions", nip = 25)
+-public class ReactionEvent extends GenericEventImpl {
+-
+-    public ReactionEvent(PublicKey pubKey, List<BaseTag> tags, Reaction reaction) {
+-        super(pubKey, Kind.REACTION, tags, reaction.getEmoji());
+-    }
+-
+-    public ReactionEvent(PublicKey pubKey, GenericEventImpl event, Reaction reaction) {
+-        super(pubKey, Kind.REACTION);
+-        this.setContent(reaction.getEmoji());
+-        this.addTag(EventTag.builder().idEvent(event.getId()).build());
++public class ReactionEvent extends EventDecorator {
++  private final GenericEvent genericEvent;
++  private URL emoji;
++  private Reaction reaction;
++  public ReactionEvent(GenericEvent genericEvent) {
++//        super(pubKey, Kind.REACTION, tags, reaction.getEmoji());
++    super(genericEvent);
++    this.genericEvent = genericEvent;
+   }
+ 
+-    public ReactionEvent(PublicKey pubKey, GenericEventImpl event, String content, @NonNull URL emoji) {
+-        super(pubKey, Kind.REACTION);
+-        this.setContent(content);
+-        this.addTag(EventTag.builder().idEvent(event.getId()).build());
+-        addEmojiTag(content, emoji, getTags());
+-    }
+-
+-    public ReactionEvent(PublicKey pubKey, List<BaseTag> tags, String content, @NonNull URL emoji) {
+-        super(pubKey, Kind.REACTION, tags);
+-        this.setContent(content);
+-        addEmojiTag(content, emoji, tags);
+-    }
++//    public ReactionEvent(PublicKey pubKey, GenericEventImpl event, Reaction reaction) {
++//        super(pubKey, Kind.REACTION);
++//        this.setContent(reaction.getEmoji());
++//        this.addTag(EventTag.builder().idEvent(event.getId()).build());
++//    }
++//
++//    public ReactionEvent(PublicKey pubKey, GenericEventImpl event, String content, @NonNull URL emoji) {
++//        super(pubKey, Kind.REACTION);
++//        this.setContent(content);
++//        this.addTag(EventTag.builder().idEvent(event.getId()).build());
++//        addEmojiTag(content, emoji, getTags());
++//    }
++//
++//    public ReactionEvent(PublicKey pubKey, List<BaseTag> tags, String content, @NonNull URL emoji) {
++//        super(pubKey, Kind.REACTION, tags);
++//        this.setContent(content);
++//        addEmojiTag(content, emoji, tags);
++//    }
+ 
+   private void addEmojiTag(String content, URL emoji, List<BaseTag> tags) {
+     List<ElementAttribute> attributes = new ArrayList<>();
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/ReplaceableEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/ReplaceableEvent.java
+index c65e57d..e0e32d9 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/ReplaceableEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/ReplaceableEvent.java
+@@ -2,25 +2,20 @@ package nostr.event.impl;
+ 
+ import lombok.EqualsAndHashCode;
+ import nostr.base.annotation.Event;
+-import nostr.event.BaseEvent;
+ 
+ /**
+  * @author squirrel
+  */
+ @EqualsAndHashCode(callSuper = false)
+ @Event(name = "Replaceable Events", nip = 16)
+-public class ReplaceableEvent implements GenericEvent {
++public class ReplaceableEvent extends EventDecorator {
++  private final GenericEvent genericEvent;
+   private final static int MAX = 20000;
+   private final static int MIN = 10000;
+   private final static String OOB_MESSAGE = "Invalid kind value. Must be between %d and %d (excl)";
+ 
+   public ReplaceableEvent(GenericEvent genericEvent) throws AssertionError {
+-    this(new GenericEventImpl()genericEvent, MAX, MIN);
+-  }
+-
+-  public ReplaceableEvent(GenericEvent genericEvent, int maxKind, int minKind) throws AssertionError {
+-//        Preconditions.
+-//        assertThatThrownBy(() -> Preconditions.checkArgume
+-    super(sender, kind, tags, content);
++    super(genericEvent);
++    this.genericEvent = genericEvent;
+   }
+ }
+diff --git a/nostr-java-event/src/main/java/nostr/event/impl/VerifyPaymentOrShippedEvent.java b/nostr-java-event/src/main/java/nostr/event/impl/VerifyPaymentOrShippedEvent.java
+index def0149..fe41e97 100644
+--- a/nostr-java-event/src/main/java/nostr/event/impl/VerifyPaymentOrShippedEvent.java
++++ b/nostr-java-event/src/main/java/nostr/event/impl/VerifyPaymentOrShippedEvent.java
+@@ -16,13 +16,18 @@ import nostr.event.impl.CustomerOrderEvent.Customer;
+  *
+  * @author eric
+  */
+-@Data
+ @EqualsAndHashCode(callSuper = false)
+ @Event(name = "", nip = 15)
+-public class VerifyPaymentOrShippedEvent extends CheckoutEvent {
+-
+-    public VerifyPaymentOrShippedEvent(PublicKey sender, Customer customer, PaymentShipmentStatus status) {
+-        super(sender, customer.getContact().getPublicKey(), status);
++public class VerifyPaymentOrShippedEvent extends EventDecorator {
++    private final GenericEvent genericEvent;
++    private final Customer customer;
++    private final PaymentShipmentStatus status;
++
++    public VerifyPaymentOrShippedEvent(GenericEvent genericEvent, Customer customer, PaymentShipmentStatus status) {
++        super(genericEvent);
++        this.genericEvent = genericEvent;
++        this.customer = customer;
++        this.status = status;
+     }
+     
+     @Getter
+@@ -35,7 +40,7 @@ public class VerifyPaymentOrShippedEvent extends CheckoutEvent {
+         private final String id;
+         
+         @JsonProperty
+-        private MessageType type;
++        private CheckoutEvent.MessageType type;
+         
+         @JsonProperty
+         private String message;
+diff --git a/nostr-java-examples/src/main/java/nostr/examples/NostrExamples.java b/nostr-java-examples/src/main/java/nostr/examples/NostrExamples.java
+index 023dca3..3cdea8b 100644
+--- a/nostr-java-examples/src/main/java/nostr/examples/NostrExamples.java
++++ b/nostr-java-examples/src/main/java/nostr/examples/NostrExamples.java
+@@ -214,7 +214,11 @@ public class NostrExamples {
+             List<BaseTag> tags = new ArrayList<>();
+             tags.add(rcptTag);
+ 
+-            var event2 = new DirectMessageEvent(publicKeySender, tags, "Hello Nakamoto!");
++            var event2 = new DirectMessageEvent(
++                new GenericEventImpl());
++            event2.setPubKey(publicKeySender);
++            event2.setTags(tags);
++            event2.setContent("Hello Nakamoto!");
+ 
+             new IdentityHelper(SENDER).encryptDirectMessage(event2);
+             SENDER.sign(event2);
+@@ -322,7 +326,10 @@ public class NostrExamples {
+         tags = new ArrayList<>();
+         tags.add(EventTag.builder().idEvent(event.getId()).build());
+         tags.add(PubKeyTag.builder().publicKey(publicKeySender).build());
+-        GenericEventImpl reactionEvent = new ReactionEvent(publicKeySender, tags, Reaction.LIKE);
++        var reactionEvent = new ReactionEvent(
++            new GenericEventImpl());
++        reactionEvent.setTags(tags);
++        reactionEvent.setReaction(Reaction.LIKE);
+ 
+         SENDER.sign(reactionEvent);
+         message = new EventMessage(reactionEvent);
+@@ -348,14 +355,26 @@ public class NostrExamples {
+ 
+         tags = new ArrayList<>();
+         tags.add(EventTag.builder().idEvent(event.getId()).build());
+-        GenericEventImpl replaceableEvent = new ReplaceableEvent(publicKeySender, 15000, tags, "Content");
++//        GenericEventImpl replaceableEvent = new ReplaceableEvent(publicKeySender, 15000, tags, "Content");
++        var replaceableEvent = new ReplaceableEvent(
++            new GenericEventImpl());
++        event.setPubKey(publicKeySender);
++        event.setKind(15000);
++        event.setTags(tags);
++        event.setContent("Content");
+ 
+         SENDER.sign(replaceableEvent);
+         message = new EventMessage(replaceableEvent);
+ 
+         CLIENT.send(message);
+ 
+-        replaceableEvent = new ReplaceableEvent(publicKeySender, 15000, tags, "New Content");
++//        replaceableEvent = new ReplaceableEvent(publicKeySender, 15000, tags, "New Content");
++        replaceableEvent = new ReplaceableEvent(
++            new GenericEventImpl());
++        event.setPubKey(publicKeySender);
++        event.setKind(15000);
++        event.setTags(tags);
++        event.setContent("New Content");
+ 
+         SENDER.sign(replaceableEvent);
+         message = new EventMessage(replaceableEvent);
+diff --git a/nostr-java-test/src/main/java/nostr/test/EntityFactory.java b/nostr-java-test/src/main/java/nostr/test/EntityFactory.java
+index 7e32a93..93dd8fe 100644
+--- a/nostr-java-test/src/main/java/nostr/test/EntityFactory.java
++++ b/nostr-java-test/src/main/java/nostr/test/EntityFactory.java
+@@ -57,8 +57,12 @@ public class EntityFactory {
+         public static DirectMessageEvent createDirectMessageEvent(PublicKey senderPublicKey, PublicKey rcptPublicKey, String content) {
+             List<BaseTag> tagList = new ArrayList<>();
+             tagList.add(PubKeyTag.builder().publicKey(rcptPublicKey).petName("uq7yfx3l").build());
+-            DirectMessageEvent event = new DirectMessageEvent(senderPublicKey, tagList, content);
+-            event.update();
++            DirectMessageEvent event = new DirectMessageEvent(
++                new GenericEventImpl());
++            event.setPubKey(senderPublicKey);
++            event.setTags(tagList);
++            event.setContent(content);
++            event.setRecipientPublicKey(rcptPublicKey);
+             return event;
+         }
+ 
+@@ -97,12 +101,23 @@ public class EntityFactory {
+         public static ReactionEvent createReactionEvent(PublicKey publicKey, GenericEventImpl original) {
+             List<BaseTag> tagList = new ArrayList<>();
+             tagList.add(EventTag.builder().idEvent(original.getId()).build());
+-            return new ReactionEvent(publicKey, tagList, Reaction.LIKE);
++//            return new ReactionEvent(publicKey, tagList, Reaction.LIKE);
++            var event= new ReactionEvent(
++                new GenericEventImpl());
++            event.setPubKey(publicKey);
++            event.setTags(tagList);
++            event.setReaction(Reaction.LIKE);
++            return event;
+         }
+ 
+         public static ReplaceableEvent createReplaceableEvent(PublicKey publicKey) {
+             String content = generateRamdomAlpha(32);
+-            return new ReplaceableEvent(publicKey, 15000, new ArrayList<>(), content);
++            var event = new ReplaceableEvent(
++                new GenericEventImpl());
++            event.setPubKey(publicKey);
++            event.setKind(Kind.valueOf(15000));
++            event.setContent(content);
++            return event;
+         }
+ 
+         public static TextNoteEvent createTextNoteEvent(PublicKey publicKey) {

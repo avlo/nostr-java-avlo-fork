@@ -18,17 +18,17 @@ import nostr.event.BaseTag;
  *
  * @author eric
  */
-@Data
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Create or update a stall", nip = 15)
-public class CreateOrUpdateStallEvent extends NostrMarketplaceEvent {
+public class CreateOrUpdateStallEvent extends EventDecorator {
+    private final GenericEvent genericEvent;
+    private final Stall stall;
 
-    protected CreateOrUpdateStallEvent() {
-        super();
-    }
-
-    public CreateOrUpdateStallEvent(PublicKey sender, List<BaseTag> tags, @NonNull Stall stall) {
-        super(sender, 30017, tags, stall);
+    public CreateOrUpdateStallEvent(GenericEvent genericEvent, Stall stall) {
+        super(genericEvent);
+        this.genericEvent = genericEvent;
+        this.stall = stall;
+//        super(sender, 30017, tags, stall);
     }
 
     @Getter

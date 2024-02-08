@@ -83,9 +83,20 @@ public class NIP25 {
             var reaction = getContent();
             var url = getEmoji();
 
-            return event != null ? 
-                    new ReactionEvent(getSender(), event, reaction, url) : 
-                    new ReactionEvent(getSender(), getTags(), reaction, url);            
+            var nonNullEvent = new ReactionEvent(
+                new GenericEventImpl());
+            nonNullEvent.setEmoji(url);
+            nonNullEvent.setPubKey(getSender());
+            nonNullEvent.setContent(reaction);
+
+            var nullEvent = new ReactionEvent(
+                new GenericEventImpl());
+            nonNullEvent.setEmoji(url);
+            nonNullEvent.setTags(getTags());
+            nonNullEvent.setContent(reaction);
+
+            return event != null ? nonNullEvent : nullEvent;
+
         }
     }
 

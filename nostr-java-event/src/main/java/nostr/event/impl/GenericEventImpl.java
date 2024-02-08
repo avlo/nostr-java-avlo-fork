@@ -13,6 +13,7 @@ import nostr.base.annotation.Key;
 import nostr.crypto.bech32.Bech32;
 import nostr.crypto.bech32.Bech32Prefix;
 import nostr.event.BaseTag;
+import nostr.event.Kind;
 import nostr.event.json.deserializer.PublicKeyDeserializer;
 import nostr.event.json.deserializer.SignatureDeserializer;
 import nostr.util.NostrException;
@@ -28,6 +29,7 @@ import java.util.List;
  * @author squirrel
  */
 @Getter
+@Setter
 @EqualsAndHashCode
 public class GenericEventImpl implements GenericEvent, ISignable, IGenericElement {
   @Key
@@ -47,7 +49,7 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
 
   @Key
   @EqualsAndHashCode.Exclude
-  private Integer kind;
+  private Kind kind;
 
   @Key
   @EqualsAndHashCode.Exclude
@@ -76,17 +78,6 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
   @JsonIgnore
   @EqualsAndHashCode.Exclude
   private List<ElementAttribute> attributes;
-
-//  public GenericEventImpl(@NonNull PublicKey pubKey, @NonNull Integer kind, @NonNull List<BaseTag> tags, String content) {
-//    this.pubKey = pubKey;
-//    this.kind = kind;
-//    this.tags = tags;
-//    this.content = content;
-//    this.attributes = new ArrayList<>();
-//    // Update parents
-//    updateTagsParents(tags);
-//  }
-
 
   @Override
   public String toBech32() {
@@ -155,7 +146,7 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
       arrayNode.add(0);
       arrayNode.add(this.pubKey.toString());
       arrayNode.add(this.createdAt);
-      arrayNode.add(this.kind);
+      arrayNode.add(this.kind.getValue());
       arrayNode.add(mapper.valueToTree(tags));
       arrayNode.add(this.content);
 

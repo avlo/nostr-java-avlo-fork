@@ -1,21 +1,19 @@
 package nostr.event.impl;
 
-import java.util.ArrayList;
-import lombok.NonNull;
-import nostr.base.ChannelProfile;
-import nostr.base.PublicKey;
+import lombok.EqualsAndHashCode;
 import nostr.base.annotation.Event;
-import nostr.event.Kind;
-import static nostr.util.NostrUtil.escapeJsonString;
 
 /**
  * @author guilhermegps
- *
  */
+@EqualsAndHashCode(callSuper = false)
 @Event(name = "Create Channel", nip = 28)
-public class ChannelCreateEvent extends GenericEventImpl {
+public class ChannelCreateEvent extends EventDecorator {
+  private final GenericEvent genericEvent;
 
-    public ChannelCreateEvent(@NonNull PublicKey pubKey, ChannelProfile profile) {
-        super(pubKey, Kind.CHANNEL_CREATE, new ArrayList<>(), escapeJsonString(profile.toString()));
-    }
+  public ChannelCreateEvent(GenericEvent genericEvent) {
+    super(genericEvent);
+    this.genericEvent = genericEvent;
+  }
+//        super(pubKey, Kind.CHANNEL_CREATE, new ArrayList<>(), escapeJsonString(profile.toString()));
 }

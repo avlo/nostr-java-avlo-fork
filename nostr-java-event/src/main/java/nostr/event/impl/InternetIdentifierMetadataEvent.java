@@ -20,10 +20,12 @@ import static nostr.util.NostrUtil.escapeJsonString;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Internet Identifier Metadata Event", nip = 5)
-public final class InternetIdentifierMetadataEvent extends GenericEventImpl {
-
-    public InternetIdentifierMetadataEvent(PublicKey pubKey, @NonNull UserProfile profile) {
-        super(pubKey, Kind.SET_METADATA);
+public final class InternetIdentifierMetadataEvent extends EventDecorator {
+    private final GenericEvent genericEvent;
+    public InternetIdentifierMetadataEvent(GenericEvent genericEvent, @NonNull UserProfile profile) {
+        super(genericEvent);
+        this.genericEvent = genericEvent;
+        genericEvent.setKind(Kind.SET_METADATA);
         this.init(profile);
     }
 

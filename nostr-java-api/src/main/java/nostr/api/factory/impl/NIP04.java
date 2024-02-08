@@ -12,6 +12,7 @@ import nostr.api.factory.EventFactory;
 import nostr.base.PublicKey;
 import nostr.event.BaseTag;
 import nostr.event.impl.DirectMessageEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.id.Identity;
 
 /**
@@ -49,7 +50,12 @@ public class NIP04 {
 
         @Override
         public DirectMessageEvent create() {
-            return new DirectMessageEvent(getSender(), recipient, getContent());
+            var event = new DirectMessageEvent(
+                new GenericEventImpl());
+            event.setPubKey(getSender());
+            event.setRecipientPublicKey(recipient);
+            event.setContent(getContent());
+            return event;
         }
     }
 

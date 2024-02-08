@@ -9,34 +9,35 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import nostr.api.factory.EventFactory;
 import nostr.base.UserProfile;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.InternetIdentifierMetadataEvent;
 import nostr.id.Identity;
 
 /**
- *
  * @author eric
  */
 public class NIP05 {
 
-    @Data
-    @EqualsAndHashCode(callSuper = false)
-    public static class InternetIdentifierMetadataEventFactory extends EventFactory<InternetIdentifierMetadataEvent> {
+  @Data
+  @EqualsAndHashCode(callSuper = false)
+  public static class InternetIdentifierMetadataEventFactory extends EventFactory<InternetIdentifierMetadataEvent> {
 
-        private final UserProfile profile;
+    private final UserProfile profile;
 
-        public InternetIdentifierMetadataEventFactory(@NonNull UserProfile profile) {
-            super(null);
-            this.profile = profile;
-        }
-
-        public InternetIdentifierMetadataEventFactory(@NonNull Identity sender, @NonNull UserProfile profile) {
-            super(sender, null);
-            this.profile = profile;
-        }
-
-        @Override
-        public InternetIdentifierMetadataEvent create() {
-            return new InternetIdentifierMetadataEvent(getSender(), profile);
-        }
+    public InternetIdentifierMetadataEventFactory(@NonNull UserProfile profile) {
+      super(null);
+      this.profile = profile;
     }
+
+    public InternetIdentifierMetadataEventFactory(@NonNull Identity sender, @NonNull UserProfile profile) {
+      super(sender, null);
+      this.profile = profile;
+    }
+
+    @Override
+    public InternetIdentifierMetadataEvent create() {
+      return new InternetIdentifierMetadataEvent(
+          new GenericEventImpl(), profile);
+    }
+  }
 }
