@@ -1,6 +1,7 @@
 package nostr.test.id;
 
 import nostr.base.PublicKey;
+import nostr.event.impl.GenericEvent;
 import nostr.event.tag.DelegationTag;
 import nostr.event.impl.GenericEventImpl;
 import nostr.id.Identity;
@@ -29,7 +30,7 @@ public class IdentityTest {
     public void testSignEvent() {
         System.out.println("testSignEvent");
         PublicKey publicKey = Identity.getInstance().getPublicKey();
-        GenericEventImpl instance = EntityFactory.Events.createTextNoteEvent(publicKey);
+        GenericEvent instance = EntityFactory.Events.createTextNoteEvent(publicKey);
         Identity.getInstance().sign(instance);
         Assertions.assertNotNull(instance.getSignature());
     }

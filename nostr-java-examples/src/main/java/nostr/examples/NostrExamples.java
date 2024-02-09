@@ -266,8 +266,7 @@ public class NostrExamples {
 
     final PublicKey publicKeySender = SENDER.getPublicKey();
 
-    var genericEvent = new GenericEventImpl(publicKeySender);
-    var event = new MetadataEvent(genericEvent, PROFILE);
+    var event = new MetadataEvent(new GenericEventImpl(publicKeySender), PROFILE);
 
     SENDER.sign(event);
     BaseMessage message = new EventMessage(event);

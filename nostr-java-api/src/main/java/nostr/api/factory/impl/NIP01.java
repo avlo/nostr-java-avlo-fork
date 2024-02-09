@@ -80,8 +80,7 @@ public class NIP01 {
 
     @Override
     public MetadataEvent create() {
-      var baseEvent = new GenericEventImpl(getSender());
-      return new MetadataEvent(baseEvent, profile);
+      return new MetadataEvent(new GenericEventImpl(getSender()), profile);
     }
   }
 

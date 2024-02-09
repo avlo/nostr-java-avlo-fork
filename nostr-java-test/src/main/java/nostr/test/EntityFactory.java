@@ -41,9 +41,7 @@ public class EntityFactory {
     public static DirectMessageEvent createDirectMessageEvent(PublicKey senderPublicKey, PublicKey rcptPublicKey, String content) {
       List<BaseTag> tagList = new ArrayList<>();
       tagList.add(PubKeyTag.builder().publicKey(rcptPublicKey).petName("uq7yfx3l").build());
-      DirectMessageEvent event = new DirectMessageEvent(
-          new GenericEventImpl());
-      event.setPubKey(senderPublicKey);
+      DirectMessageEvent event = new DirectMessageEvent(new GenericEventImpl(senderPublicKey));
       event.setTags(tagList);
       event.setContent(content);
       event.setRecipientPublicKey(rcptPublicKey);
@@ -56,8 +54,7 @@ public class EntityFactory {
 
     public static InternetIdentifierMetadataEvent createInternetIdentifierMetadataEvent(UserProfile profile) {
       final PublicKey publicKey = profile.getPublicKey();
-      InternetIdentifierMetadataEvent event = new InternetIdentifierMetadataEvent(new GenericEventImpl(), profile);
-      event.setPubKey(publicKey);
+      InternetIdentifierMetadataEvent event = new InternetIdentifierMetadataEvent(new GenericEventImpl(publicKey), profile);
       event.update();
       return event;
     }
@@ -73,8 +70,7 @@ public class EntityFactory {
         sbContent.append(", ").append(((PubKeyTag) tagList.get(i)).getPublicKey().toString());
 
       }
-      var event = new MentionsEvent(new GenericEventImpl());
-      event.setPubKey(publicKey);
+      var event = new MentionsEvent(new GenericEventImpl(publicKey));
       event.setTags(tagList);
       event.setContent(sbContent.toString());
       event.update();
@@ -82,18 +78,13 @@ public class EntityFactory {
     }
 
     public static MetadataEvent createMetadataEvent(UserProfile profile) {
-      var event = new GenericEventImpl();
-      event.setPubKey(profile.getPublicKey());
-      return new MetadataEvent(event, profile);
+      return new MetadataEvent(new GenericEventImpl(profile.getPublicKey()), profile);
     }
 
-    public static ReactionEvent createReactionEvent(PublicKey publicKey, GenericEventImpl original) {
+    public static ReactionEvent createReactionEvent(PublicKey publicKey, GenericEvent original) {
       List<BaseTag> tagList = new ArrayList<>();
       tagList.add(EventTag.builder().idEvent(original.getId()).build());
-//            return new ReactionEvent(publicKey, tagList, Reaction.LIKE);
-      var event = new ReactionEvent(
-          new GenericEventImpl());
-      event.setPubKey(publicKey);
+      var event = new ReactionEvent(original);
       event.setTags(tagList);
       event.setReaction(Reaction.LIKE);
       return event;
@@ -101,9 +92,7 @@ public class EntityFactory {
 
     public static ReplaceableEvent createReplaceableEvent(PublicKey publicKey) {
       String content = generateRamdomAlpha(32);
-      var event = new ReplaceableEvent(
-          new GenericEventImpl());
-      event.setPubKey(publicKey);
+      var event = new ReplaceableEvent(new GenericEventImpl(publicKey));
       event.setKind(Kind.valueOf(15000));
       event.setContent(content);
       return event;

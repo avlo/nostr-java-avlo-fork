@@ -20,9 +20,11 @@ public final class MetadataEvent extends EventDecorator implements UpdatableEven
 
   @JsonIgnore
   private final UserProfile profile;
+  private final GenericEvent genericEvent;
 
   public MetadataEvent(GenericEvent genericEvent, UserProfile profile) {
     super(genericEvent);
+    this.genericEvent = genericEvent;
     this.profile = profile;
   }
 
@@ -44,7 +46,8 @@ public final class MetadataEvent extends EventDecorator implements UpdatableEven
   @Override
   public void update() {
     setContent();
-    ((GenericEventImpl) genericEvent).update();
+    // TODO: below worth revisit
+    ((GenericEventImpl)genericEvent).update();
   }
 
   private void setContent() {
