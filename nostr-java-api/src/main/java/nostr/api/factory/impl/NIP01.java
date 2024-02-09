@@ -56,7 +56,7 @@ public class NIP01 {
 
     @Override
     public TextNoteEvent create() {
-      var event = new nostr.event.impl.TextNoteEvent(getSender(), getTags(), getContent());
+      var event = new nostr.event.impl.TextNoteEvent(new GenericEventImpl(getSender()), getTags(), getContent());
       getTags().forEach(t -> event.addTag(t));
       return event;
     }
@@ -80,8 +80,7 @@ public class NIP01 {
 
     @Override
     public MetadataEvent create() {
-      var baseEvent = new GenericEventImpl();
-      baseEvent.setPubKey(getSender());
+      var baseEvent = new GenericEventImpl(getSender());
       return new MetadataEvent(baseEvent, profile);
     }
   }

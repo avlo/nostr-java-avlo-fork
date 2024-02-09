@@ -179,7 +179,7 @@ public class NostrExamples {
     List<BaseTag> tags = new ArrayList<>();
     tags.add(rcptTag);
 
-    GenericEvent event = new TextNoteEvent(publicKeySender, tags,
+    GenericEvent event = new TextNoteEvent(new GenericEventImpl(publicKeySender), tags,
         "Hello world, I'm here on nostr-java API!");
 
     SENDER.sign(event);
@@ -243,7 +243,7 @@ public class NostrExamples {
     List<BaseTag> tags = new ArrayList<>();
     tags.add(rcptTag);
 
-    GenericEvent event = new TextNoteEvent(publicKeySender, tags, "Hello Astral, Please delete me!");
+    GenericEvent event = new TextNoteEvent(new GenericEventImpl(publicKeySender), tags, "Hello Astral, Please delete me!");
 
     SENDER.sign(event);
     BaseMessage message = new EventMessage(event);
@@ -301,7 +301,7 @@ public class NostrExamples {
     List<BaseTag> tags = new ArrayList<>();
     tags.add(rcptTag);
 
-    GenericEvent event = new TextNoteEvent(publicKeySender, tags, "Hello Astral, Please like me!");
+    GenericEvent event = new TextNoteEvent(new GenericEventImpl(publicKeySender), tags, "Hello Astral, Please like me!");
 
     SENDER.sign(event);
     BaseMessage message = new EventMessage(event);
@@ -330,7 +330,7 @@ public class NostrExamples {
     List<BaseTag> tags = new ArrayList<>();
     tags.add(rcptTag);
 
-    GenericEvent event = new TextNoteEvent(publicKeySender, tags, "Hello Astral, Please replace me!");
+    GenericEvent event = new TextNoteEvent(new GenericEventImpl(publicKeySender), tags, "Hello Astral, Please replace me!");
 
     SENDER.sign(event);
     BaseMessage message = new EventMessage(event);

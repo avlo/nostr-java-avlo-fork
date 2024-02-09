@@ -18,14 +18,11 @@ public final class MetadataEvent extends EventDecorator implements UpdatableEven
 
   private static final String NAME_PATTERN = "\\w[\\w\\-]+\\w";
 
-  private final GenericEvent genericEvent;
   @JsonIgnore
   private final UserProfile profile;
 
   public MetadataEvent(GenericEvent genericEvent, UserProfile profile) {
     super(genericEvent);
-    this.genericEvent = genericEvent;
-    validate();
     this.profile = profile;
   }
 
