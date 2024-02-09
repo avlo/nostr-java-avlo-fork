@@ -110,7 +110,7 @@ public class NostrApiExamples {
       });
 
       executor.submit(() -> {
-        sendChannelMessage();
+        sendInitialMessageToNobody();
       });
 
       executor.submit(() -> {
@@ -282,23 +282,23 @@ public class NostrApiExamples {
 
   }
 
-  private static GenericEvent sendChannelMessage() {
-    logHeader("sendChannelMessage");
+  private static GenericEvent sendInitialMessageToNobody() {
+    logHeader("sendInitialMessageToNobody");
 
-    var channelCreateEvent = createChannel();
-    var event = NIP28.createChannelMessageEvent((ChannelCreateEvent) channelCreateEvent, "Hello everybody!");
-    Nostr.sign(event);
-    Nostr.send(event);
+    var initialChannelCreateEvent = createChannel();
+    var initialEvent = NIP28.createInitialChannelMessageEvent((ChannelCreateEvent) initialChannelCreateEvent, "Hello everybody!");
+    Nostr.sign(initialEvent);
+    Nostr.send(initialEvent);
 
-    return event;
+    return initialEvent;
   }
 
   private static GenericEventImpl hideMessage() {
     logHeader("hideMessage");
 
-    var channelMessageEvent = sendChannelMessage();
+    var sendInitialMessageToNobodyMessageEvent = sendInitialMessageToNobody();
 
-    GenericEventImpl event = NIP28.createHideMessageEvent((ChannelMessageEvent) channelMessageEvent, "Dick pic");
+    GenericEventImpl event = NIP28.createHideMessageEvent((ChannelMessageEvent) sendInitialMessageToNobodyMessageEvent, "Dick pic");
 
     Nostr.sign(event);
     Nostr.send(event);

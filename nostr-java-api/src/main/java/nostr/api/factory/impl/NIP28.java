@@ -35,10 +35,7 @@ public class NIP28 {
 
     @Override
     public ChannelCreateEvent create() {
-      var channelMetadataEvent = new ChannelMetadataEvent(
-          new GenericEventImpl());
-      channelMetadataEvent.setChannelProfile(profile);
-      return new ChannelCreateEvent(channelMetadataEvent);
+      return new ChannelCreateEvent(new GenericEventImpl(getSender()), profile);
     }
   }
 
@@ -46,24 +43,19 @@ public class NIP28 {
   @EqualsAndHashCode(callSuper = false)
   public static class ChannelMessageEventFactory extends EventFactory<ChannelMessageEvent> {
 
-    private final ChannelCreateEvent rootEvent;
+    private final ChannelCreateEvent channelCreateEventRoot;
     private ChannelMessageEvent channelMessageEvent;
     private Relay recommendedRelayRoot;
     private Relay recommendedRelayReply;
 
-    public ChannelMessageEventFactory(@NonNull ChannelCreateEvent rootEvent, @NonNull String content) {
+    public ChannelMessageEventFactory(@NonNull ChannelCreateEvent channelCreateEventRoot, @NonNull String content) {
       super(content);
-      this.rootEvent = rootEvent;
-    }
-
-    public ChannelMessageEventFactory(@NonNull Identity sender, @NonNull ChannelCreateEvent rootEvent, @NonNull String content) {
-      super(sender, content);
-      this.rootEvent = rootEvent;
+      this.channelCreateEventRoot = channelCreateEventRoot;
     }
 
     @Override
     public ChannelMessageEvent create() {
-      return new ChannelMessageEvent(getSender(), rootEvent, channelMessageEvent, getContent(), recommendedRelayRoot, recommendedRelayReply);
+      return new ChannelMessageEvent(new GenericEventImpl(getSender()), channelCreateEventRoot, channelMessageEvent, getContent(), recommendedRelayRoot, recommendedRelayReply);
     }
   }
 
@@ -88,9 +80,8 @@ public class NIP28 {
 
     @Override
     public ChannelMetadataEvent create() {
-      var channelMetadataEvent = new ChannelMetadataEvent(
-          new GenericEventImpl());
-      channelMetadataEvent.setChannelProfile(profile);
+      var channelMetadataEvent = new ChannelMetadataEvent(channelCreateEvent);
+      channelMetadataEvent.setContent(escapeJsonString(profile.toString()));
       return channelMetadataEvent;
     }
   }

@@ -21,12 +21,13 @@ import java.util.UUID;
 @Event(name = "", nip = 15)
 public class CustomerOrderEvent extends EventDecorator {
   private final GenericEvent genericEvent;
-  private CustomerOrderEvent.Customer customer;
+  private final Customer customer;
 
-  public CustomerOrderEvent(GenericEvent genericEvent) {
+  public CustomerOrderEvent(GenericEvent genericEvent, Customer customer) {
 //        super(sender, customer.getContact().getPublicKey(), customer);
     super(genericEvent);
     this.genericEvent = genericEvent;
+    this.customer = customer;
   }
 
   @Getter

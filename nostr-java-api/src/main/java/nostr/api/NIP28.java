@@ -7,7 +7,6 @@ package nostr.api;
 import lombok.NonNull;
 import nostr.api.factory.impl.NIP28.ChannelCreateEventFactory;
 import nostr.api.factory.impl.NIP28.ChannelMessageEventFactory;
-import nostr.api.factory.impl.NIP28.ChannelMetadataEventFactory;
 import nostr.api.factory.impl.NIP28.HideMessageEventFactory;
 import nostr.api.factory.impl.NIP28.MuteUserEventFactory;
 import nostr.base.ChannelProfile;
@@ -15,7 +14,6 @@ import nostr.base.PublicKey;
 import nostr.base.Relay;
 import nostr.event.impl.ChannelCreateEvent;
 import nostr.event.impl.ChannelMessageEvent;
-import nostr.event.impl.ChannelMetadataEvent;
 import nostr.event.impl.HideMessageEvent;
 import nostr.event.impl.MuteUserEvent;
 
@@ -40,35 +38,35 @@ public class NIP28 {
      * @param content the message
      * @return 
      */
-    public static ChannelMessageEvent createChannelMessageEvent(@NonNull ChannelCreateEvent channelCreateEvent, String content) {
-        return createChannelMessageEvent(channelCreateEvent, null, content);
+    public static ChannelMessageEvent createInitialChannelMessageEvent(@NonNull ChannelCreateEvent channelCreateEvent, String content) {
+        return createInitialChannelMessageEvent(channelCreateEvent, null, content);
     }
 
     /**
      * Create a KIND-42 channel message reply
      * @param channelCreateEvent KIND-40 channel create event
-     * @param channelMessageEvent the KIND-42 channel message event 
+     * @param channelMessageEventCanBeNullOnInitial the KIND-42 channel message event
      * @param content the message
      * @return 
      */
-    public static ChannelMessageEvent createChannelMessageEvent(@NonNull ChannelCreateEvent channelCreateEvent, ChannelMessageEvent channelMessageEvent, String content) {
-        return createChannelMessageEvent(channelCreateEvent, channelMessageEvent, content, null, null);
+    public static ChannelMessageEvent createInitialChannelMessageEvent(@NonNull ChannelCreateEvent channelCreateEvent, ChannelMessageEvent channelMessageEventCanBeNullOnInitial, String content) {
+        return createInitialChannelMessageEvent(channelCreateEvent, channelMessageEventCanBeNullOnInitial, content, null, null);
     }
 
     /**
      * Create a KIND-41 channel message reply while specifying the recommended relays
      * @param channelCreateEvent KIND-40 channel create event
-     * @param channelMessageEvent the KIND-42 channel message event
+     * @param initialChannelMessageEvent the KIND-42 channel message event
      * @param content the message
-     * @param recommendedRelayRoot the recommended relay for the KIND-40 event
-     * @param recommendedRelayReply the recommended relay for the KIND-42 event
+     * @param recommendedRelayRootCanBeNullOnInitial the recommended relay for the KIND-40 event
+     * @param recommendedRelayReplyCanBeNullOnInitial the recommended relay for the KIND-42 event
      * @return 
      */
-    public static ChannelMessageEvent createChannelMessageEvent(@NonNull ChannelCreateEvent channelCreateEvent, @NonNull ChannelMessageEvent channelMessageEvent, String content, Relay recommendedRelayRoot, Relay recommendedRelayReply) {
+    public static ChannelMessageEvent createInitialChannelMessageEvent(@NonNull ChannelCreateEvent channelCreateEvent, @NonNull ChannelMessageEvent initialChannelMessageEvent, String content, Relay recommendedRelayRootCanBeNullOnInitial, Relay recommendedRelayReplyCanBeNullOnInitial) {
         var factory = new ChannelMessageEventFactory(channelCreateEvent, content);
-        factory.setRecommendedRelayReply(recommendedRelayReply);
-        factory.setRecommendedRelayRoot(recommendedRelayRoot);
-        factory.setChannelMessageEvent(channelMessageEvent);
+        factory.setRecommendedRelayReply(recommendedRelayReplyCanBeNullOnInitial);
+        factory.setRecommendedRelayRoot(recommendedRelayRootCanBeNullOnInitial);
+        factory.setChannelMessageEvent(initialChannelMessageEvent);
         return factory.create();
     }
     
@@ -78,9 +76,9 @@ public class NIP28 {
      * @param profile the channel metadata 
      * @return 
      */
-    public static ChannelMetadataEvent createChannelMetadataEvent(@NonNull ChannelCreateEvent channelCreateEvent, @NonNull ChannelProfile profile) {
-        return new ChannelMetadataEventFactory(channelCreateEvent, profile).create();
-    }
+//    public static ChannelMetadataEvent createChannelMetadataEvent(@NonNull ChannelCreateEvent channelCreateEvent, @NonNull ChannelProfile profile) {
+//        return new ChannelMetadataEventFactory(channelCreateEvent, profile).create();
+//    }
     
     /**
      * Create a KIND-43 hide message event

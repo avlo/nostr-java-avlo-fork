@@ -31,7 +31,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class GenericEventImpl implements GenericEvent, ISignable, IGenericElement {
+public class GenericEventImpl implements GenericEvent, ISignable, IGenericElement, UpdatableEvent, ValidatableEvent {
   @Key
   @EqualsAndHashCode.Include
   private String id;
@@ -79,10 +79,56 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
   @EqualsAndHashCode.Exclude
   private List<ElementAttribute> attributes;
 
+  public GenericEventImpl(PublicKey publicKeySender) {
+    this.pubKey = publicKeySender;
+  }
+
+  @Override
+  public void update() {
+
+    try {
+      this.validate();
+
+      this.setCreatedAt(Instant.now().getEpochSecond());
+
+      this._serializedEvent = this.serialize().getBytes(StandardCharsets.UTF_8);
+
+      this.id = NostrUtil.bytesToHex(NostrUtil.sha256(_serializedEvent));
+    } catch (NostrException | NoSuchAlgorithmException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  private String serialize() throws NostrException {
+    var mapper = IEncoder.MAPPER;
+    var arrayNode = JsonNodeFactory.instance.arrayNode();
+
+    try {
+      arrayNode.add(0);
+      arrayNode.add(this.getPubKey().toString());
+      arrayNode.add(this.getCreatedAt());
+      arrayNode.add(this.getKind().getValue());
+      arrayNode.add(mapper.valueToTree(this.getTags()));
+      arrayNode.add(this.getContent());
+
+      return mapper.writeValueAsString(arrayNode);
+    } catch (JsonProcessingException e) {
+      throw new NostrException(e);
+    }
+  }
+
+  protected final void updateTagsParents(List<? extends BaseTag> tagList) {
+    if (tagList != null && !tagList.isEmpty()) {
+      for (ITag t : tagList) {
+        t.setParent(this);
+      }
+    }
+  }
+
   @Override
   public String toBech32() {
     if (!isSigned()) {
-      this.update();
+      update();
     }
 
     try {
@@ -109,20 +155,6 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
     }
   }
 
-  public void update() {
-
-    try {
-      this.validate();
-
-      this.createdAt = Instant.now().getEpochSecond();
-
-      this._serializedEvent = this.serialize().getBytes(StandardCharsets.UTF_8);
-
-      this.id = NostrUtil.bytesToHex(NostrUtil.sha256(_serializedEvent));
-    } catch (NostrException | NoSuchAlgorithmException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
 
   @Transient
   public boolean isSigned() {
@@ -134,33 +166,7 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
     this.attributes.add(attribute);
   }
 
-  protected void validate() {
-
-  }
-
-  private String serialize() throws NostrException {
-    var mapper = IEncoder.MAPPER;
-    var arrayNode = JsonNodeFactory.instance.arrayNode();
-
-    try {
-      arrayNode.add(0);
-      arrayNode.add(this.pubKey.toString());
-      arrayNode.add(this.createdAt);
-      arrayNode.add(this.kind.getValue());
-      arrayNode.add(mapper.valueToTree(tags));
-      arrayNode.add(this.content);
-
-      return mapper.writeValueAsString(arrayNode);
-    } catch (JsonProcessingException e) {
-      throw new NostrException(e);
-    }
-  }
-
-  protected final void updateTagsParents(List<? extends BaseTag> tagList) {
-    if (tagList != null && !tagList.isEmpty()) {
-      for (ITag t : tagList) {
-        t.setParent(this);
-      }
-    }
+  @Override
+  public void validate() {
   }
 }

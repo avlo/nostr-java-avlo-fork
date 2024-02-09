@@ -2,9 +2,9 @@ package nostr.event.impl;
 
 import lombok.Getter;
 import lombok.Setter;
-import nostr.base.ChannelProfile;
 import nostr.base.annotation.Event;
 import nostr.event.Kind;
+import nostr.event.tag.EventTag;
 
 /**
  * @author guilhermegps
@@ -13,13 +13,11 @@ import nostr.event.Kind;
 @Setter
 @Event(name = "Channel Metadata", nip = 28)
 public class ChannelMetadataEvent extends EventDecorator {
-  private final GenericEvent genericEvent;
-  private ChannelProfile channelProfile;
 
   public ChannelMetadataEvent(GenericEvent genericEvent) {
     super(genericEvent);
-    this.genericEvent = genericEvent;
-    this.genericEvent.setKind(Kind.CHANNEL_METADATA);
+    setKind(Kind.CHANNEL_METADATA);
+    addTag(EventTag.builder().idEvent(genericEvent.getId()).build());
   }
 
 //    public ChannelMetadataEvent(@NonNull PublicKey pubKey, @NonNull ChannelCreateEvent event, ChannelProfile profile) {

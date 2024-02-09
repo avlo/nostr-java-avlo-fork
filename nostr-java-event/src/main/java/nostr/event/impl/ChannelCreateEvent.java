@@ -1,7 +1,11 @@
 package nostr.event.impl;
 
 import lombok.EqualsAndHashCode;
+import nostr.base.Profile;
 import nostr.base.annotation.Event;
+import nostr.event.Kind;
+
+import static nostr.util.NostrUtil.escapeJsonString;
 
 /**
  * @author guilhermegps
@@ -9,11 +13,10 @@ import nostr.base.annotation.Event;
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Create Channel", nip = 28)
 public class ChannelCreateEvent extends EventDecorator {
-  private final GenericEvent genericEvent;
 
-  public ChannelCreateEvent(GenericEvent genericEvent) {
+  public ChannelCreateEvent(GenericEvent genericEvent, Profile profile) {
     super(genericEvent);
-    this.genericEvent = genericEvent;
+    setKind(Kind.CHANNEL_CREATE);
+    setContent(escapeJsonString(profile.toString()));
   }
-//        super(pubKey, Kind.CHANNEL_CREATE, new ArrayList<>(), escapeJsonString(profile.toString()));
 }

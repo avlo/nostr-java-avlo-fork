@@ -80,7 +80,11 @@ public class NIP15 {
 
     @Override
     public MerchantRequestPaymentEvent create() {
-      return new MerchantRequestPaymentEvent(getSender(), this.customer, payment);
+      var event = new MerchantRequestPaymentEvent(
+          new CustomerOrderEvent(
+              new GenericEventImpl(), customer), payment);
+      event.setPubKey(getSender());
+      return event;
     }
   }
 
@@ -103,10 +107,8 @@ public class NIP15 {
 
     @Override
     public CustomerOrderEvent create() {
-//            return new CustomerOrderEvent(getSender(), customer);
-      var event = new CustomerOrderEvent(new GenericEventImpl());
+      var event = new CustomerOrderEvent(new GenericEventImpl(), customer);
       event.setPubKey(getSender());
-      event.setCustomer(customer);
       return event;
     }
 
