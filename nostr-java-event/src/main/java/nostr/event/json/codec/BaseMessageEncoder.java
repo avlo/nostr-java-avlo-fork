@@ -11,6 +11,7 @@ import static nostr.base.IEncoder.MAPPER;
 import nostr.base.Relay;
 import nostr.event.BaseEvent;
 import nostr.event.BaseMessage;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.GenericMessage;
 import nostr.event.message.ClientAuthenticationMessage;
 import nostr.event.message.CloseMessage;
@@ -36,7 +37,7 @@ public class BaseMessageEncoder implements IEncoder<BaseMessage> {
         try {
             arrayNode.add(message.getCommand());
             if (message instanceof EventMessage msg) {
-                JsonNode tree = MAPPER.readTree(new BaseEventEncoder((BaseEvent) msg.getEvent(), relay).encode());
+                JsonNode tree = MAPPER.readTree(new BaseEventEncoder((GenericEventImpl) msg.getEvent(), relay).encode());
                 arrayNode.add(tree);
             } else if (message instanceof ReqMessage msg) {
                 arrayNode.add(msg.getSubscriptionId());

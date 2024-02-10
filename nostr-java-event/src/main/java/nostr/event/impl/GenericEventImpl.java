@@ -14,6 +14,7 @@ import nostr.crypto.bech32.Bech32;
 import nostr.crypto.bech32.Bech32Prefix;
 import nostr.event.BaseTag;
 import nostr.event.Kind;
+import nostr.event.json.deserializer.KindDeserializer;
 import nostr.event.json.deserializer.PublicKeyDeserializer;
 import nostr.event.json.deserializer.SignatureDeserializer;
 import nostr.util.NostrException;
@@ -50,6 +51,7 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
 
   @Key
   @EqualsAndHashCode.Exclude
+  @JsonDeserialize(using = KindDeserializer.class)
   private Kind kind;
 
   @Key
@@ -79,6 +81,9 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
   @JsonIgnore
   @EqualsAndHashCode.Exclude
   private List<ElementAttribute> attributes;
+
+  public GenericEventImpl() {
+  }
 
   public GenericEventImpl(PublicKey publicKeySender) {
     this.pubKey = publicKeySender;

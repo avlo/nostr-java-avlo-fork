@@ -46,7 +46,7 @@ public class DecodeTest {
         GenericEventImpl eventImpl = (GenericEventImpl) eventMessage.getEvent();
 
         Assertions.assertEquals("28f2fc030e335d061f0b9d03ce0e2c7d1253e6fadb15d89bd47379a96b2c861a", eventImpl.getId());
-        Assertions.assertEquals(1, eventImpl.getKind());
+        Assertions.assertEquals(1, eventImpl.getKind().getValue());
         Assertions.assertEquals("2bed79f81439ff794cf5ac5f7bff9121e257f399829e472c7a14d3e86fe76984", eventImpl.getPubKey().toString());
         Assertions.assertEquals(1687765220, eventImpl.getCreatedAt());
         Assertions.assertEquals("手順書が間違ってたら作業者は無理だな", eventImpl.getContent());
