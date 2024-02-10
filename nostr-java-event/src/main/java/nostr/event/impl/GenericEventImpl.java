@@ -84,6 +84,24 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
     this.pubKey = publicKeySender;
   }
 
+  public GenericEventImpl(PublicKey publicKeySender, Kind kind) {
+    this.pubKey = publicKeySender;
+    this.kind = kind;
+  }
+
+  public GenericEventImpl(PublicKey publicKeySender, Kind kind, List<BaseTag> tags) {
+    this.pubKey = publicKeySender;
+    this.kind = kind;
+    this.tags = tags;
+  }
+
+  public GenericEventImpl(PublicKey publicKeySender, Kind kind, List<BaseTag> tags, String content) {
+    this.pubKey = publicKeySender;
+    this.kind = kind;
+    this.tags = tags;
+    this.content = content;
+  }
+
   @Override
   public void update() {
     // TODO: refactor procedural into OO, possibly utility class

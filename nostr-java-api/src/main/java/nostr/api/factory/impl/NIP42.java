@@ -63,8 +63,7 @@ public class NIP42 {
 
     @Override
     public ClientAuthenticationEvent create() {
-      var event = new ClientAuthenticationEvent(new GenericEventImpl(getSender()), challenge, relay);
-      return event;
+      return new ClientAuthenticationEvent(new GenericEventImpl(getSender()), challenge, relay);
     }
   }
 

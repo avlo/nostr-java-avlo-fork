@@ -13,8 +13,8 @@ import nostr.event.tag.EventTag;
 public class ChannelMessageEvent extends EventDecorator {
   public ChannelMessageEvent(GenericEvent genericEvent) {
     super(genericEvent);
-    this.setKind(Kind.CHANNEL_MESSAGE);
-    this.addTag(EventTag.builder().idEvent(genericEvent.getId()).marker(Marker.ROOT).build());
+    setKind(Kind.CHANNEL_MESSAGE);
+    addTag(EventTag.builder().idEvent(genericEvent.getId()).marker(Marker.ROOT).build());
   }
 
 //    public ChannelMessageEvent(GenericEvent genericEvent, Relay recommendedRelay) {
@@ -37,8 +37,8 @@ public class ChannelMessageEvent extends EventDecorator {
 
   public ChannelMessageEvent(GenericEvent genericEvent, ChannelCreateEvent rootEvent, ChannelMessageEvent replyEvent, String content, Relay recommendedRelayRoot, Relay recommendedRelayReply) {
     super(genericEvent);
-    this.setKind(Kind.CHANNEL_MESSAGE);
-    this.setContent(content);
+    setKind(Kind.CHANNEL_MESSAGE);
+    setContent(content);
 
     final EventTag rootEventTag = EventTag.builder().idEvent(rootEvent.getId()).marker(Marker.ROOT).build();
     if (recommendedRelayRoot != null) {

@@ -45,11 +45,7 @@ public class NIP23 {
 
     @Override
     public GenericEvent create() {
-      GenericEvent event = new GenericEventImpl(getSender());
-      event.setKind(Kind.valueOf(Kinds.KIND_PRE_LONG_FORM_CONTENT));
-      event.setTags(getTags());
-      event.setContent(getContent());
-      return event;
+      return new GenericEventImpl(getSender(), Kind.valueOf(Kinds.KIND_PRE_LONG_FORM_CONTENT), getTags(), getContent());
     }
   }
 
