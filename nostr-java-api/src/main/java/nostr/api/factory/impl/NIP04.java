@@ -47,13 +47,9 @@ public class NIP04 {
       this.recipient = recipient;
     }
 
-
     @Override
     public DirectMessageEvent create() {
-      var event = new DirectMessageEvent(new GenericEventImpl(getSender()));
-      event.setRecipientPublicKey(recipient);
-      event.setContent(getContent());
-      return event;
+      return new DirectMessageEvent(new GenericEventImpl(getSender()), recipient, getContent());
     }
   }
 

@@ -108,4 +108,14 @@ public class EventDecorator implements GenericEvent {
   public Integer getNip() {
     return genericEvent.getNip();
   }
+
+  @Override
+  public void update() {
+    genericEvent.update();
+  }
+
+  @Override
+  public byte[] get_serializedEvent() {
+    return genericEvent.get_serializedEvent();
+  }
 }

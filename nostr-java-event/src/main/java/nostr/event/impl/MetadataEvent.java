@@ -30,6 +30,7 @@ public final class MetadataEvent extends EventDecorator implements UpdatableEven
 
   @Override
   public void validate() {
+    // TODO: refactor procedural into OO
     boolean valid = true;
 
     var strNameArr = this.profile.getNip05().split("@");
@@ -46,8 +47,7 @@ public final class MetadataEvent extends EventDecorator implements UpdatableEven
   @Override
   public void update() {
     setContent();
-    // TODO: below worth revisit
-    ((GenericEventImpl)genericEvent).update();
+    genericEvent.update();
   }
 
   private void setContent() {

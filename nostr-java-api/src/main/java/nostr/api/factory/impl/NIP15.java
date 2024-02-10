@@ -9,11 +9,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import nostr.api.factory.EventFactory;
 import nostr.event.BaseTag;
+import nostr.event.Kind;
 import nostr.event.impl.*;
 import nostr.event.tag.HashtagTag;
 import nostr.event.tag.IdentifierTag;
 import nostr.id.Identity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,12 +51,10 @@ public class NIP15 {
 
     @Override
     public VerifyPaymentOrShippedEvent create() {
-      var event = new VerifyPaymentOrShippedEvent(
+      return new VerifyPaymentOrShippedEvent(
           new CheckoutEvent(
-              new GenericEventImpl(getSender())), customer, status);
-      return event;
+              new DirectMessageEvent(new GenericEventImpl(getSender()))), customer, status);
     }
-
   }
 
   @Data
@@ -120,19 +120,14 @@ public class NIP15 {
       this.stall = stall;
     }
 
-    @Deprecated
-    public CreateOrUpdateStallEventFactory(Identity identity, @NonNull CreateOrUpdateStallEvent.Stall stall) {
-      super(identity, stall.toString());
-      this.stall = stall;
-    }
-
     @Override
     public CreateOrUpdateStallEvent create() {
       return new CreateOrUpdateStallEvent(
           new NostrMarketplaceEvent(
-              new GenericEventImpl(getSender())), stall);
+              new ParameterizedReplaceableEvent(
+                  new ReplaceableEvent(
+                      new GenericEventImpl(getSender()), Kind.KIND_SET_STALL))), new ArrayList<>(), stall);
     }
-
   }
 
   @Data
@@ -161,22 +156,15 @@ public class NIP15 {
           new NostrMarketplaceEvent(
               new ParameterizedReplaceableEvent(
                   new ReplaceableEvent(
-                      new GenericEventImpl(getSender())))));
+                      new GenericEventImpl(getSender()), Kind.KIND_SET_PRODUCT))));
       event.setContent(product.toString());
-      event.addTag(new IdentifierTag(product.getId()));
+      IdentifierTag idtag = new IdentifierTag(product.getId());
+      event.addTag(idtag);
       if (categories != null) {
         categories.forEach(c -> event.addTag(new HashtagTag(c)));
       }
 
       return event;
     }
-
   }
-
-  public static class Kinds {
-
-    public static final Integer KIND_SET_STALL = 30017;
-    public static final Integer KIND_SET_PRODUCT = 30018;
-  }
-
 }

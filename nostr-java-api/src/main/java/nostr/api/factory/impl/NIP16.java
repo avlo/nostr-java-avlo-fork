@@ -50,8 +50,8 @@ public class NIP16 {
 
     @Override
     public ReplaceableEvent create() {
-      var event = new ReplaceableEvent(new GenericEventImpl(getSender()));
-      event.setKind(Kind.valueOf(kind));
+      var event = new ReplaceableEvent(
+          new GenericEventImpl(getSender()), Kind.valueOf(kind));
       event.setTags(getTags());
       event.setContent(getContent());
       return event;

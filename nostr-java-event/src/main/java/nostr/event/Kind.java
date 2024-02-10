@@ -28,6 +28,8 @@ public enum Kind {
     REPLACEABLE_EVENT(10_000, "replaceable_event"),
     EPHEMEREAL_EVENT(20_000, "ephemereal_event"),
     CLIENT_AUTH(22_242, "authentication_of_clients_to_relays"),
+    KIND_SET_STALL(30_017, "set_stall"),
+    KIND_SET_PRODUCT(30_018, "set_product"),
     UNDEFINED(-1, "undefined");
 
     @JsonValue

@@ -10,10 +10,7 @@ import lombok.Data;
 import nostr.base.ElementAttribute;
 import nostr.base.IDecoder;
 import nostr.event.BaseMessage;
-import nostr.event.impl.ClientAuthenticationEvent;
-import nostr.event.impl.Filters;
-import nostr.event.impl.GenericEventImpl;
-import nostr.event.impl.GenericMessage;
+import nostr.event.impl.*;
 import nostr.event.message.BaseAuthMessage;
 import nostr.event.message.ClientAuthenticationMessage;
 import nostr.event.message.CloseMessage;
@@ -69,13 +66,13 @@ public class BaseMessageDecoder implements IDecoder<BaseMessage> {
                     message = new EoseMessage(arg.toString());
                 case "EVENT" -> {
                     if (msgArr.length == 2 && arg instanceof Map map) {
-                        var event = mapper.convertValue(map, new TypeReference<GenericEventImpl>() {
+                        var event = mapper.convertValue(map, new TypeReference<GenericEvent>() {
                         });
                         message = new EventMessage(event);
                     } else if (msgArr.length == 3 && arg instanceof String) {
                         var subId = arg.toString();
                         if (msgArr[2] instanceof Map map) {
-                            var event = mapper.convertValue(map, new TypeReference<GenericEventImpl>() {
+                            var event = mapper.convertValue(map, new TypeReference<GenericEvent>() {
                             });
                             message = new EventMessage(event, subId);
                         }

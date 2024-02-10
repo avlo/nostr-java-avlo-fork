@@ -198,9 +198,7 @@ public class NostrExamples {
       List<BaseTag> tags = new ArrayList<>();
       tags.add(rcptTag);
 
-      var event2 = new DirectMessageEvent(new GenericEventImpl(publicKeySender));
-      event2.setTags(tags);
-      event2.setContent("Hello Nakamoto!");
+      var event2 = new DirectMessageEvent(new GenericEventImpl(publicKeySender), tags, "Hello Nakamoto!");
 
       new IdentityHelper(SENDER).encryptDirectMessage(event2);
       SENDER.sign(event2);
@@ -223,9 +221,7 @@ public class NostrExamples {
     List<BaseTag> tags = new ArrayList<>();
     tags.add(rcptTag);
 
-    var event = new MentionsEvent(new GenericEventImpl(publicKeySender));
-    event.setTags(tags);
-    event.setContent("Hello " + RECEIVER.getPublicKey().toString());
+    var event = new MentionsEvent(new GenericEventImpl(publicKeySender), tags, "Hello " + RECEIVER.getPublicKey().toString());
     SENDER.sign(event);
 
     BaseMessage message = new EventMessage(event);
@@ -338,8 +334,7 @@ public class NostrExamples {
 
     tags = new ArrayList<>();
     tags.add(EventTag.builder().idEvent(event.getId()).build());
-    var replaceableEvent = new ReplaceableEvent(new GenericEventImpl(publicKeySender));
-    event.setKind(Kind.valueOf(15000));
+    var replaceableEvent = new ReplaceableEvent(new GenericEventImpl(publicKeySender), Kind.valueOf(15000));
     event.setTags(tags);
     event.setContent("Content");
 
@@ -348,8 +343,7 @@ public class NostrExamples {
 
     CLIENT.send(message);
 
-    replaceableEvent = new ReplaceableEvent(new GenericEventImpl(publicKeySender));
-    event.setKind(Kind.valueOf(15000));
+    replaceableEvent = new ReplaceableEvent(new GenericEventImpl(publicKeySender), Kind.valueOf(15000));
     event.setTags(tags);
     event.setContent("New Content");
 

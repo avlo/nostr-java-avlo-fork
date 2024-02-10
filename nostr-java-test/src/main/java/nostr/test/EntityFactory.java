@@ -41,10 +41,7 @@ public class EntityFactory {
     public static DirectMessageEvent createDirectMessageEvent(PublicKey senderPublicKey, PublicKey rcptPublicKey, String content) {
       List<BaseTag> tagList = new ArrayList<>();
       tagList.add(PubKeyTag.builder().publicKey(rcptPublicKey).petName("uq7yfx3l").build());
-      DirectMessageEvent event = new DirectMessageEvent(new GenericEventImpl(senderPublicKey));
-      event.setTags(tagList);
-      event.setContent(content);
-      event.setRecipientPublicKey(rcptPublicKey);
+      DirectMessageEvent event = new DirectMessageEvent(new GenericEventImpl(senderPublicKey), tagList, content);
       return event;
     }
 
@@ -70,9 +67,7 @@ public class EntityFactory {
         sbContent.append(", ").append(((PubKeyTag) tagList.get(i)).getPublicKey().toString());
 
       }
-      var event = new MentionsEvent(new GenericEventImpl(publicKey));
-      event.setTags(tagList);
-      event.setContent(sbContent.toString());
+      var event = new MentionsEvent(new GenericEventImpl(publicKey), tagList, sbContent.toString());
       event.update();
       return event;
     }
@@ -92,8 +87,7 @@ public class EntityFactory {
 
     public static ReplaceableEvent createReplaceableEvent(PublicKey publicKey) {
       String content = generateRamdomAlpha(32);
-      var event = new ReplaceableEvent(new GenericEventImpl(publicKey));
-      event.setKind(Kind.valueOf(15000));
+      var event = new ReplaceableEvent(new GenericEventImpl(publicKey), Kind.valueOf(15000));
       event.setContent(content);
       return event;
     }
@@ -124,14 +118,14 @@ public class EntityFactory {
     public static GenericTag createGenericTag(PublicKey publicKey, IEvent event) {
       GenericTag tag = new GenericTag("devil");
       tag.addAttribute(ElementAttribute.builder().name("param0").value("Lucifer").nip(666).build());
-      ((GenericEventImpl) event).addTag(tag);
+      ((TextNoteEvent) event).addTag(tag);
       return tag;
     }
 
     public static GenericTag createGenericTag(PublicKey publicKey, IEvent event, Integer tagNip) {
       GenericTag tag = new GenericTag("devil", tagNip);
       tag.addAttribute(ElementAttribute.builder().name("param0").value("Lucifer").nip(666).build());
-      ((GenericEventImpl) event).addTag(tag);
+      ((TextNoteEvent) event).addTag(tag);
       return tag;
     }
 

@@ -32,4 +32,6 @@ public interface GenericEvent extends BaseEvent, ISignable, IGenericElement {
 
   Integer getNip();
   void setNip(Integer nip);
+  byte[] get_serializedEvent();
+  void update();
 }

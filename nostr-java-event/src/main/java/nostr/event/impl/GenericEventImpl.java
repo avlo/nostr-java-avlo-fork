@@ -23,6 +23,7 @@ import java.beans.Transient;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class GenericEventImpl implements GenericEvent, ISignable, IGenericElement, UpdatableEvent, ValidatableEvent {
+public class GenericEventImpl implements GenericEvent, ISignable, IGenericElement {
   @Key
   @EqualsAndHashCode.Include
   private String id;
@@ -85,10 +86,8 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
 
   @Override
   public void update() {
-
+    // TODO: refactor procedural into OO, possibly utility class
     try {
-      this.validate();
-
       this.setCreatedAt(Instant.now().getEpochSecond());
 
       this._serializedEvent = this.serialize().getBytes(StandardCharsets.UTF_8);
@@ -149,10 +148,16 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
 
   public void addTag(BaseTag tag) {
 
-    if (!tags.contains(tag)) {
+    if (!getTagsViaSingletion().contains(tag)) {
       tag.setParent(this);
       tags.add(tag);
     }
+  }
+
+  private List<BaseTag> getTagsViaSingletion() {
+    if (tags == null)
+      tags = new ArrayList<>();
+    return tags;
   }
 
 
@@ -164,9 +169,5 @@ public class GenericEventImpl implements GenericEvent, ISignable, IGenericElemen
   @Override
   public void addAttribute(ElementAttribute attribute) {
     this.attributes.add(attribute);
-  }
-
-  @Override
-  public void validate() {
   }
 }

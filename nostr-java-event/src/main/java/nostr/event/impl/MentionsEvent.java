@@ -3,26 +3,32 @@ package nostr.event.impl;
 import lombok.EqualsAndHashCode;
 import nostr.base.ITag;
 import nostr.base.annotation.Event;
+import nostr.event.BaseTag;
 import nostr.event.Kind;
 import nostr.event.tag.PubKeyTag;
+
+import java.util.List;
 
 /**
  * @author squirrel
  */
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Handling Mentions", nip = 8)
-public final class MentionsEvent extends EventDecorator implements UpdatableEvent {
+public final class MentionsEvent extends EventDecorator {
   private final GenericEvent genericEvent;
 
-  public MentionsEvent(GenericEvent genericEvent) {
+  public MentionsEvent(GenericEvent genericEvent, List<BaseTag> tags, String content) {
     super(genericEvent);
     this.genericEvent = genericEvent;
-    this.genericEvent.setPubKey(getPubKey());
-    this.genericEvent.setKind(Kind.TEXT_NOTE);
+    setTags(tags);
+    setContent(content);
+    setKind(Kind.TEXT_NOTE);
   }
 
   @Override
   public void update() {
+    // TODO: refactor procedural into OO
+    genericEvent.update();
     int index = 0;
     // TODO - Refactor with the EntityAttributeUtil class
     while (getTags().iterator().hasNext()) {
