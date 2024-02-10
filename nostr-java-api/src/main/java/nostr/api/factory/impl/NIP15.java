@@ -11,8 +11,6 @@ import nostr.api.factory.EventFactory;
 import nostr.event.BaseTag;
 import nostr.event.Kind;
 import nostr.event.impl.*;
-import nostr.event.tag.HashtagTag;
-import nostr.event.tag.IdentifierTag;
 import nostr.id.Identity;
 
 import java.util.ArrayList;
@@ -152,19 +150,11 @@ public class NIP15 {
 
     @Override
     public CreateOrUpdateProductEvent create() {
-      var event = new CreateOrUpdateProductEvent(
+      return new CreateOrUpdateProductEvent(
           new NostrMarketplaceEvent(
               new ParameterizedReplaceableEvent(
                   new ReplaceableEvent(
-                      new GenericEventImpl(getSender()), Kind.KIND_SET_PRODUCT))));
-      event.setContent(product.toString());
-      IdentifierTag idtag = new IdentifierTag(product.getId());
-      event.addTag(idtag);
-      if (categories != null) {
-        categories.forEach(c -> event.addTag(new HashtagTag(c)));
-      }
-
-      return event;
+                      new GenericEventImpl(getSender()), Kind.KIND_SET_PRODUCT))), product, categories);
     }
   }
 }

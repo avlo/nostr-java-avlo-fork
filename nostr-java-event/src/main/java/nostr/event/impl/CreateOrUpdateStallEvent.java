@@ -26,6 +26,7 @@ public class CreateOrUpdateStallEvent extends EventDecorator {
     super(genericEvent);
     setTags(tags);
     setKind(Kind.KIND_SET_STALL);
+    setContent(stall.toString());
     this.stall = stall;
   }
 

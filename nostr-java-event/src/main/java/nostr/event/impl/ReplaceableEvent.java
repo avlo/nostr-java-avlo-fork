@@ -14,6 +14,7 @@ public class ReplaceableEvent extends EventDecorator implements ValidatableEvent
   private final int maxKind;
   private final static String OOB_MESSAGE = "Invalid kind value. Must be between %d and %d (excl)";
 
+  // TODO: revisit since kind parameter (Kind.KIND_SET_PRODUCT(30_018)) > 20K max
   public ReplaceableEvent(GenericEvent genericEvent, Kind kind) throws AssertionError {
     this(genericEvent, kind, 10_000, 20_000);
   }
