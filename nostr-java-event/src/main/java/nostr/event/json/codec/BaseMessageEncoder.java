@@ -40,7 +40,8 @@ public class BaseMessageEncoder implements IEncoder<BaseMessage> {
                 arrayNode.add(tree);
             } else if (message instanceof ReqMessage msg) {
                 arrayNode.add(msg.getSubscriptionId());
-                JsonNode tree = MAPPER.readTree(new BaseEventEncoder(msg.getFilters(), relay).encode());
+//                TODO: revisit below cast
+                JsonNode tree = MAPPER.readTree(new BaseEventEncoder((BaseEvent) msg.getFilters(), relay).encode());
                 arrayNode.add(tree);
             } else if (message instanceof NoticeMessage msg) {
                 arrayNode.add(msg.getMessage());

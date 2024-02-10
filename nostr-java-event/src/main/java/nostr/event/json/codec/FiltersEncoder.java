@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nostr.base.Relay;
+import nostr.event.BaseEvent;
 import nostr.event.impl.Filters;
 import nostr.util.NostrException;
 
@@ -23,12 +24,13 @@ import nostr.util.NostrException;
 @EqualsAndHashCode(callSuper = false)
 public class FiltersEncoder extends BaseEventEncoder {
 
+    // TODO: revisit below cast
     public FiltersEncoder(Filters filters, Relay relay) {
-        super(filters, relay);
+        super((BaseEvent) filters, relay);
     }
 
     public FiltersEncoder(Filters filters) {
-        super(filters);
+        super((BaseEvent) filters);
     }
 
     @Override
