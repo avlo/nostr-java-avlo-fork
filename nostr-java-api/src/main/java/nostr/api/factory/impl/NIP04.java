@@ -4,7 +4,6 @@
  */
 package nostr.api.factory.impl;
 
-import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -15,52 +14,51 @@ import nostr.event.impl.DirectMessageEvent;
 import nostr.event.impl.GenericEventImpl;
 import nostr.id.Identity;
 
+import java.util.List;
+
 /**
- *
  * @author eric
  */
 public class NIP04 {
 
-    @Data
-    @EqualsAndHashCode(callSuper = false)
-    public static class DirectMessageEventFactory extends EventFactory<DirectMessageEvent> {
+  @Data
+  @EqualsAndHashCode(callSuper = false)
+  public static class DirectMessageEventFactory extends EventFactory<DirectMessageEvent> {
 
-        private final PublicKey recipient;
+    private final PublicKey recipient;
 
-        public DirectMessageEventFactory(@NonNull PublicKey recipient, @NonNull String content) {
-            super(content);
-            this.recipient = recipient;
-        }
-
-        public DirectMessageEventFactory(@NonNull List<BaseTag> tags, @NonNull PublicKey recipient, @NonNull String content) {
-            super(content);
-            this.recipient = recipient;
-        }
-
-        public DirectMessageEventFactory(@NonNull Identity sender, @NonNull PublicKey recipient, @NonNull String content) {
-            super(sender, content);
-            this.recipient = recipient;
-        }
-
-        public DirectMessageEventFactory(@NonNull Identity identity, @NonNull List<BaseTag> tags, @NonNull PublicKey recipient, @NonNull String content) {
-            super(identity, content);
-            this.recipient = recipient;
-        }
-
-
-        @Override
-        public DirectMessageEvent create() {
-            var event = new DirectMessageEvent(
-                new GenericEventImpl());
-            event.setPubKey(getSender());
-            event.setRecipientPublicKey(recipient);
-            event.setContent(getContent());
-            return event;
-        }
+    public DirectMessageEventFactory(@NonNull PublicKey recipient, @NonNull String content) {
+      super(content);
+      this.recipient = recipient;
     }
 
-    public static class Kinds {
-        public static final Integer KIND_ENCRYPTED_DIRECT_MESSAGE = 4;
+    public DirectMessageEventFactory(@NonNull List<BaseTag> tags, @NonNull PublicKey recipient, @NonNull String content) {
+      super(content);
+      this.recipient = recipient;
     }
+
+    public DirectMessageEventFactory(@NonNull Identity sender, @NonNull PublicKey recipient, @NonNull String content) {
+      super(sender, content);
+      this.recipient = recipient;
+    }
+
+    public DirectMessageEventFactory(@NonNull Identity identity, @NonNull List<BaseTag> tags, @NonNull PublicKey recipient, @NonNull String content) {
+      super(identity, content);
+      this.recipient = recipient;
+    }
+
+
+    @Override
+    public DirectMessageEvent create() {
+      var event = new DirectMessageEvent(new GenericEventImpl(getSender()));
+      event.setRecipientPublicKey(recipient);
+      event.setContent(getContent());
+      return event;
+    }
+  }
+
+  public static class Kinds {
+    public static final Integer KIND_ENCRYPTED_DIRECT_MESSAGE = 4;
+  }
 
 }

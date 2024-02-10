@@ -49,10 +49,9 @@ public class NIP15 {
 
     @Override
     public VerifyPaymentOrShippedEvent create() {
-//            return new VerifyPaymentOrShippedEvent(getSender(), customer, status);
       var event = new VerifyPaymentOrShippedEvent(
           new CheckoutEvent(
-              new GenericEventImpl()), customer, status);
+              new GenericEventImpl(getSender())), customer, status);
       return event;
     }
 
@@ -80,11 +79,9 @@ public class NIP15 {
 
     @Override
     public MerchantRequestPaymentEvent create() {
-      var event = new MerchantRequestPaymentEvent(
+      return new MerchantRequestPaymentEvent(
           new CustomerOrderEvent(
-              new GenericEventImpl(), customer), payment);
-      event.setPubKey(getSender());
-      return event;
+              new GenericEventImpl(getSender()), customer), payment);
     }
   }
 
@@ -107,9 +104,7 @@ public class NIP15 {
 
     @Override
     public CustomerOrderEvent create() {
-      var event = new CustomerOrderEvent(new GenericEventImpl(), customer);
-      event.setPubKey(getSender());
-      return event;
+      return new CustomerOrderEvent(new GenericEventImpl(getSender()), customer);
     }
 
   }
@@ -133,12 +128,9 @@ public class NIP15 {
 
     @Override
     public CreateOrUpdateStallEvent create() {
-//            return new CreateOrUpdateStallEvent(getSender(), new ArrayList<>(), stall);
-      var event = new CreateOrUpdateStallEvent(
+      return new CreateOrUpdateStallEvent(
           new NostrMarketplaceEvent(
-              new GenericEventImpl()), stall);
-      event.setPubKey(getSender());
-      return event;
+              new GenericEventImpl(getSender())), stall);
     }
 
   }
@@ -169,8 +161,7 @@ public class NIP15 {
           new NostrMarketplaceEvent(
               new ParameterizedReplaceableEvent(
                   new ReplaceableEvent(
-                      new GenericEventImpl()))));
-      event.setPubKey(getSender());
+                      new GenericEventImpl(getSender())))));
       event.setContent(product.toString());
       event.addTag(new IdentifierTag(product.getId()));
       if (categories != null) {

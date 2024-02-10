@@ -37,7 +37,7 @@ public class NIP05 {
     @Override
     public InternetIdentifierMetadataEvent create() {
       return new InternetIdentifierMetadataEvent(
-          new GenericEventImpl(), profile);
+          new GenericEventImpl(getSender()), profile);
     }
   }
 }

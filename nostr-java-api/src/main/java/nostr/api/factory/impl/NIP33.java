@@ -56,9 +56,7 @@ public class NIP33 {
         @Override
         public ParameterizedReplaceableEvent create() {
             var event = new ParameterizedReplaceableEvent(
-                new ReplaceableEvent(
-                    new GenericEventImpl()));
-            event.setPubKey(getSender());
+                new ReplaceableEvent(new GenericEventImpl(getSender())));
             event.setKind(Kind.valueOf(kind));
             event.setTags(getTags());
             event.setContent(getContent());

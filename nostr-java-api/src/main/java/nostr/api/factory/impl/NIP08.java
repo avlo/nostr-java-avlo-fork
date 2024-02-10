@@ -37,7 +37,7 @@ public class NIP08 {
 
     @Override
     public MentionsEvent create() {
-      var event = new MentionsEvent(new GenericEventImpl());
+      var event = new MentionsEvent(new GenericEventImpl(getSender()));
       event.setTags(getTags());
       event.setContent(getContent());
       getTags().forEach(t -> event.addTag(t));

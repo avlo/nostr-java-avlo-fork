@@ -8,7 +8,10 @@ import nostr.base.UserProfile;
 import nostr.event.BaseTag;
 import nostr.event.Kind;
 import nostr.event.Reaction;
-import nostr.event.impl.*;
+import nostr.event.impl.ChannelCreateEvent;
+import nostr.event.impl.ChannelMessageEvent;
+import nostr.event.impl.Filters;
+import nostr.event.impl.GenericEvent;
 import nostr.event.list.KindList;
 import nostr.event.tag.EventTag;
 import nostr.event.tag.PubKeyTag;
@@ -293,12 +296,12 @@ public class NostrApiExamples {
     return initialEvent;
   }
 
-  private static GenericEventImpl hideMessage() {
+  private static GenericEvent hideMessage() {
     logHeader("hideMessage");
 
     var sendInitialMessageToNobodyMessageEvent = sendInitialMessageToNobody();
 
-    GenericEventImpl event = NIP28.createHideMessageEvent((ChannelMessageEvent) sendInitialMessageToNobodyMessageEvent, "Dick pic");
+    GenericEvent event = NIP28.createHideMessageEvent((ChannelMessageEvent) sendInitialMessageToNobodyMessageEvent, "Dick pic");
 
     Nostr.sign(event);
     Nostr.send(event);
@@ -306,10 +309,10 @@ public class NostrApiExamples {
     return event;
   }
 
-  private static GenericEventImpl muteUser() {
+  private static GenericEvent muteUser() {
     logHeader("muteUser");
 
-    GenericEventImpl event = NIP28.createMuteUserEvent(RECEIVER.getPublicKey(), "Posting dick pics");
+    GenericEvent event = NIP28.createMuteUserEvent(RECEIVER.getPublicKey(), "Posting dick pics");
 
     Nostr.sign(event);
     Nostr.send(event);
