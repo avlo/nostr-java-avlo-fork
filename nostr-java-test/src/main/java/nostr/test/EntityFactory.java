@@ -33,7 +33,7 @@ public class EntityFactory {
     public static EphemeralEvent createEphemeralEvent(PublicKey publicKey) {
       List<BaseTag> tagList = new ArrayList<>();
       tagList.add(PubKeyTag.builder().publicKey(publicKey).petName("eric").build());
-      EphemeralEvent event = new EphemeralEvent(publicKey, Kind.EPHEMEREAL_EVENT.getValue(), tagList);
+      EphemeralEvent event = new EphemeralEvent(new GenericEventImpl(publicKey), Kind.EPHEMEREAL_EVENT.getValue(), tagList);
       event.update();
       return event;
     }
@@ -113,7 +113,7 @@ public class EntityFactory {
       List<BaseTag> tagList = new ArrayList<>();
       final PubKeyTag pkTag = PubKeyTag.builder().publicKey(publicKey).petName("bob").build();
       tagList.add(pkTag);
-      return new OtsEvent(publicKey, tagList, generateRamdomAlpha(32), generateRamdomAlpha(32));
+      return new OtsEvent(new GenericEventImpl(publicKey), tagList, generateRamdomAlpha(32), generateRamdomAlpha(32));
     }
 
     public static GenericTag createGenericTag(PublicKey publicKey) {

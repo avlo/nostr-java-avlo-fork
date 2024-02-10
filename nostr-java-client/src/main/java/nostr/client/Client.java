@@ -172,8 +172,7 @@ public class Client {
   public void auth(Identity identity, String challenge, Relay relay) throws NostrException {
 
     log.log(Level.INFO, "Authenticating...");
-    var event = new ClientAuthenticationEvent(new GenericEventImpl(), challenge, relay);
-    event.setPubKey(identity.getPublicKey());
+    var event = new ClientAuthenticationEvent(new GenericEventImpl(identity.getPublicKey()), challenge, relay);
     BaseMessage authMsg = new ClientAuthenticationMessage(event);
 
     identity.sign(event);

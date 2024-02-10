@@ -117,7 +117,7 @@ public class NIP28 {
 
     @Override
     public HideMessageEvent create() {
-      return new HideMessageEvent(getSender(), channelMessageEvent, getContent());
+      return new HideMessageEvent(new GenericEventImpl(getSender()), channelMessageEvent, getContent());
     }
   }
 
@@ -152,7 +152,7 @@ public class NIP28 {
 
     @Override
     public MuteUserEvent create() {
-      return new MuteUserEvent(getSender(), mutedUser, getContent());
+      return new MuteUserEvent(new GenericEventImpl(getSender()), mutedUser, getContent());
     }
   }
 }

@@ -11,6 +11,7 @@ import lombok.NonNull;
 import nostr.api.factory.EventFactory;
 import nostr.event.BaseTag;
 import nostr.event.impl.ContactListEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.id.IIdentity;
 
 /**
@@ -41,7 +42,7 @@ public class NIP02 {
 
         @Override
         public ContactListEvent create() {
-            return new ContactListEvent(getSender(), getTags());
+            return new ContactListEvent(new GenericEventImpl(getSender()), getTags());
         }
     }
 

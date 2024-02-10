@@ -4,81 +4,81 @@
  */
 package nostr.api.factory.impl;
 
-import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import nostr.api.factory.EventFactory;
 import nostr.event.BaseTag;
 import nostr.event.Kind;
-import nostr.event.impl.*;
+import nostr.event.impl.EphemeralEvent;
+import nostr.event.impl.GenericEventImpl;
+import nostr.event.impl.ReplaceableEvent;
 import nostr.id.Identity;
 
+import java.util.List;
+
 /**
- *
  * @author eric
  */
 public class NIP16 {
 
-    @Data
-    @EqualsAndHashCode(callSuper = false)
-    public static class ReplaceableEventFactory extends EventFactory<ReplaceableEvent> {
+  @Data
+  @EqualsAndHashCode(callSuper = false)
+  public static class ReplaceableEventFactory extends EventFactory<ReplaceableEvent> {
 
-        private final Integer kind;
+    private final Integer kind;
 
-        public ReplaceableEventFactory(@NonNull Integer kind, @NonNull String content) {
-            super(content);
-            this.kind = kind;
-        }
-
-        public ReplaceableEventFactory(@NonNull Identity sender, @NonNull Integer kind, @NonNull String content) {
-            super(sender, content);
-            this.kind = kind;
-        }
-
-        public ReplaceableEventFactory(@NonNull List<BaseTag> tags, @NonNull Integer kind, @NonNull String content) {
-            super(tags, content);
-            this.kind = kind;
-        }
-
-        public ReplaceableEventFactory(@NonNull Identity sender, @NonNull List<BaseTag> tags, @NonNull Integer kind, @NonNull String content) {
-            super(sender, tags, content);
-            this.kind = kind;
-        }
-
-        @Override
-        public ReplaceableEvent create() {
-            var event = new ReplaceableEvent(
-                new GenericEventImpl());
-            event.setPubKey(getSender());
-            event.setKind(Kind.valueOf(kind));
-            event.setTags(getTags());
-            event.setContent(getContent());
-            return event;
-        }
+    public ReplaceableEventFactory(@NonNull Integer kind, @NonNull String content) {
+      super(content);
+      this.kind = kind;
     }
 
-    @Data
-    @EqualsAndHashCode(callSuper = false)
-    public static class EphemeralEventFactory extends EventFactory<EphemeralEvent> {
-
-        private final Integer kind;
-
-        public EphemeralEventFactory(@NonNull Integer kind, @NonNull String content) {
-            super(content);
-            this.kind = kind;
-        }
-
-        public EphemeralEventFactory(@NonNull Identity sender, @NonNull Integer kind, @NonNull String content) {
-            super(sender, content);
-            this.kind = kind;
-        }
-
-        @Override
-        public EphemeralEvent create() {
-            return new EphemeralEvent(getSender(), kind, getTags(), getContent());
-        }
-
+    public ReplaceableEventFactory(@NonNull Identity sender, @NonNull Integer kind, @NonNull String content) {
+      super(sender, content);
+      this.kind = kind;
     }
+
+    public ReplaceableEventFactory(@NonNull List<BaseTag> tags, @NonNull Integer kind, @NonNull String content) {
+      super(tags, content);
+      this.kind = kind;
+    }
+
+    public ReplaceableEventFactory(@NonNull Identity sender, @NonNull List<BaseTag> tags, @NonNull Integer kind, @NonNull String content) {
+      super(sender, tags, content);
+      this.kind = kind;
+    }
+
+    @Override
+    public ReplaceableEvent create() {
+      var event = new ReplaceableEvent(new GenericEventImpl(getSender()));
+      event.setKind(Kind.valueOf(kind));
+      event.setTags(getTags());
+      event.setContent(getContent());
+      return event;
+    }
+  }
+
+  @Data
+  @EqualsAndHashCode(callSuper = false)
+  public static class EphemeralEventFactory extends EventFactory<EphemeralEvent> {
+
+    private final Integer kind;
+
+    public EphemeralEventFactory(@NonNull Integer kind, @NonNull String content) {
+      super(content);
+      this.kind = kind;
+    }
+
+    public EphemeralEventFactory(@NonNull Identity sender, @NonNull Integer kind, @NonNull String content) {
+      super(sender, content);
+      this.kind = kind;
+    }
+
+    @Override
+    public EphemeralEvent create() {
+      return new EphemeralEvent(new GenericEventImpl(getSender()), kind, getTags(), getContent());
+    }
+
+  }
 
 }

@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import nostr.api.factory.EventFactory;
 import nostr.event.BaseTag;
 import nostr.event.impl.DeletionEvent;
+import nostr.event.impl.GenericEventImpl;
 import nostr.id.Identity;
 
 /**
@@ -38,7 +39,7 @@ public class NIP09 {
 
         @Override
         public DeletionEvent create() {
-            return new DeletionEvent(getSender(), getTags());
+            return new DeletionEvent(new GenericEventImpl(getSender()), getTags());
         }
 
     }

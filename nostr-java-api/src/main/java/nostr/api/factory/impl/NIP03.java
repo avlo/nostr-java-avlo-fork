@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import nostr.api.factory.EventFactory;
 import nostr.event.BaseTag;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.OtsEvent;
 import nostr.id.Identity;
 
@@ -47,7 +48,7 @@ public class NIP03 {
 
         @Override
         public OtsEvent create() {
-            return new OtsEvent(getSender(), getTags(), getContent(), ots);
+            return new OtsEvent(new GenericEventImpl(getSender()), getTags(), getContent(), ots);
         }
 
     }

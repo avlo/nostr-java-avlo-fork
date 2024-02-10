@@ -9,6 +9,7 @@ import nostr.api.NIP46.NIP46Request;
 import nostr.api.NIP46.NIP46Response;
 import nostr.api.factory.EventFactory;
 import nostr.base.PublicKey;
+import nostr.event.impl.GenericEventImpl;
 import nostr.event.impl.NostrConnectEvent;
 import nostr.id.IIdentity;
 
@@ -38,7 +39,7 @@ public class NIP46 {
         }
 
         public NostrConnectEvent create() {
-            return new NostrConnectEvent(getIdentity().getPublicKey(), getContent(), getRecipient());
+            return new NostrConnectEvent(new GenericEventImpl(getIdentity().getPublicKey()), getContent(), getRecipient());
         }
     }
 }

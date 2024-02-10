@@ -8,14 +8,14 @@ import nostr.event.tag.PubKeyTag;
 
 /**
  * @author guilhermegps
- *
  */
 @Event(name = "Mute User on Channel", nip = 28)
-public class MuteUserEvent extends GenericEventImpl {
+public class MuteUserEvent extends EventDecorator {
 
-    public MuteUserEvent(@NonNull PublicKey pubKey, @NonNull PublicKey mutedUser, String content) {
-        super(pubKey, Kind.MUTE_USER);
-        this.addTag(PubKeyTag.builder().publicKey(mutedUser).build());
-        this.setContent(content);        
-    }
+  public MuteUserEvent(GenericEvent genericEvent, @NonNull PublicKey mutedUser, String content) {
+    super(genericEvent);
+    setKind(Kind.MUTE_USER);
+    this.addTag(PubKeyTag.builder().publicKey(mutedUser).build());
+    this.setContent(content);
+  }
 }

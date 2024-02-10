@@ -1,28 +1,28 @@
 
 package nostr.event.impl;
 
-import java.util.List;
-import nostr.event.Kind;
-import nostr.base.PublicKey;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nostr.base.annotation.Event;
 import nostr.event.BaseTag;
+import nostr.event.Kind;
+
+import java.util.List;
 
 /**
- *
  * @author squirrel
  */
-@Data
 @EqualsAndHashCode(callSuper = false)
 @Event(name = "Event Deletion", nip = 9)
-public class DeletionEvent extends GenericEventImpl {
+public class DeletionEvent extends EventDecorator {
 
-    public DeletionEvent(PublicKey pubKey, List<BaseTag> tags, String content) {        
-        super(pubKey, Kind.DELETION, tags, content);        
-    }
+  public DeletionEvent(GenericEvent genericEvent, List<BaseTag> tags, String content) {
+    super(genericEvent);
+    setKind(Kind.DELETION);
+    setTags(tags);
+    setContent(content);
+  }
 
-    public DeletionEvent(PublicKey pubKey, List<BaseTag> tags) {        
-        this(pubKey, tags, "Deletion request");
-    }
+  public DeletionEvent(GenericEvent genericEvent, List<BaseTag> tags) {
+    this(genericEvent, tags, "Deletion request");
+  }
 }

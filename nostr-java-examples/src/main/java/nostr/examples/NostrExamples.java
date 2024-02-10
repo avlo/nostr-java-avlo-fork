@@ -252,7 +252,7 @@ public class NostrExamples {
 
     tags = new ArrayList<>();
     tags.add(EventTag.builder().idEvent(event.getId()).build());
-    GenericEvent delEvent = new DeletionEvent(publicKeySender, tags);
+    GenericEvent delEvent = new DeletionEvent(new GenericEventImpl(publicKeySender), tags);
 
     SENDER.sign(delEvent);
     message = new EventMessage(delEvent);
@@ -284,7 +284,7 @@ public class NostrExamples {
     List<BaseTag> tags = new ArrayList<>();
     tags.add(rcptTag);
 
-    GenericEvent event = new EphemeralEvent(publicKeySender, Kind.EPHEMEREAL_EVENT.getValue(), tags);
+    GenericEvent event = new EphemeralEvent(new GenericEventImpl(publicKeySender), Kind.EPHEMEREAL_EVENT.getValue(), tags);
 
     SENDER.sign(event);
     BaseMessage message = new EventMessage(event);
@@ -456,7 +456,7 @@ public class NostrExamples {
 
       var channelMessageEvent = sendChannelMessage();
 
-      GenericEvent event = new HideMessageEvent(publicKeySender, (ChannelMessageEvent) channelMessageEvent,
+      GenericEvent event = new HideMessageEvent(new GenericEventImpl(publicKeySender), (ChannelMessageEvent) channelMessageEvent,
           ContentReason.builder().reason("Dick pic").build().toString());
 
       SENDER.sign(event);
@@ -474,7 +474,7 @@ public class NostrExamples {
     logHeader("muteUser");
     final PublicKey publicKeySender = SENDER.getPublicKey();
 
-    GenericEvent event = new MuteUserEvent(publicKeySender, RECEIVER.getPublicKey(),
+    GenericEvent event = new MuteUserEvent(new GenericEventImpl(publicKeySender), RECEIVER.getPublicKey(),
         ContentReason.builder().reason("Posting dick pics").build().toString());
 
     SENDER.sign(event);
