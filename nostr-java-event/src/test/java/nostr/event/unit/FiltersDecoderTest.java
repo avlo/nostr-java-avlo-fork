@@ -3,6 +3,7 @@ package nostr.event.unit;
 import java.time.Instant;
 import java.util.Date;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import nostr.base.GenericTagQuery;
 import nostr.base.PublicKey;
 import nostr.base.Relay;
@@ -33,7 +34,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Log
+@Slf4j
 public class FiltersDecoderTest {
 
     @Test
@@ -73,8 +74,31 @@ public class FiltersDecoderTest {
     }
 
     @Test
-    public void testAddressableTagFiltersWithoutRelayDecoder() {
-        log.info("testAddressableTagFiltersWithoutRelayDecoder");
+    public void testAddressTagFiltersKindPublicKey() {
+        log.info("testAddressTagFiltersKindPublicKey");
+
+        Integer kind = 1;
+        String author = "f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75";
+
+        String joined = String.join(":", String.valueOf(kind), author)+":";
+
+        AddressTag addressTag = new AddressTag();
+        addressTag.setKind(kind);
+        addressTag.setPublicKey(new PublicKey(author));
+
+        String expected = "{\"#a\":[\"" + joined + "\"]}";
+        Filters decodedFilters = new FiltersDecoder().decode(expected);
+
+        Filters expectedFilters = new Filters(
+            new AddressTagFilter<>(addressTag));
+        assertEquals(
+            expectedFilters,
+            decodedFilters);
+    }
+    
+    @Test
+    public void testAddressTagFiltersKindPublicKeyIdentifierTag() {
+        log.info("testAddressTagFiltersKindPublicKeyIdentifierTag");
 
         Integer kind = 1;
         String author = "f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75";
@@ -117,8 +141,13 @@ public class FiltersDecoderTest {
         String addressableTag = "{\"#a\":[\"" + expected + "\"]}";
         Filters decodedFilters = new FiltersDecoder().decode(addressableTag);
 
-        Filters expected1 = new Filters(new AddressTagFilter<>(addressTag));
-        assertEquals(expected1, decodedFilters);
+        Filters expectedFilters = new Filters(new AddressTagFilter<>(addressTag));
+        log.debug("000000000000000");
+        log.debug(expectedFilters.toString());
+        log.debug("----------");
+        log.debug(decodedFilters.toString());
+        log.debug("000000000000000");
+        assertEquals(expectedFilters, decodedFilters);
     }
 
     @Test

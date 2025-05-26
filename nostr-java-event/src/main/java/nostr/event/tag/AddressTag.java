@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,16 +20,12 @@ import nostr.base.annotation.Tag;
 import nostr.event.BaseTag;
 import nostr.event.json.serializer.AddressTagSerializer;
 
-/**
- * @author eric
- */
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Tag(code = "a", nip = 33)
 @JsonPropertyOrder({"kind", "publicKey", "identifierTag", "relay"})
 @NoArgsConstructor
-@AllArgsConstructor
 @JsonSerialize(using = AddressTagSerializer.class)
 public class AddressTag extends BaseTag {
 
@@ -44,6 +39,7 @@ public class AddressTag extends BaseTag {
 
     @Key
     @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private IdentifierTag identifierTag;
 
     @Key
@@ -51,14 +47,28 @@ public class AddressTag extends BaseTag {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Relay relay;
 
+    public AddressTag(@NonNull Integer kind, @NonNull PublicKey publicKey) {
+        this.kind = kind;
+        this.publicKey = publicKey;
+    }
+
+    public AddressTag(@NonNull Integer kind, @NonNull PublicKey publicKey, @NonNull IdentifierTag identifierTag) {
+        this(kind, publicKey);
+        this.identifierTag = identifierTag;
+    }
+
+    public AddressTag(@NonNull Integer kind, @NonNull PublicKey publicKey, @NonNull IdentifierTag identifierTag, @NonNull Relay relay) {
+        this(kind, publicKey, identifierTag);
+        this.relay = relay;
+    }
+
     public static <T extends BaseTag> T deserialize(@NonNull JsonNode node) {
         List<String> list = Arrays.stream(node.get(1).asText().split(":")).toList();
 
         final AddressTag addressTag = new AddressTag();
-        addressTag.setKind(Integer.valueOf(list.get(0)));
-        addressTag.setPublicKey(new PublicKey(list.get(1)));
-        addressTag.setIdentifierTag(new IdentifierTag(list.get(2)));
-
+        addressTag.setKind(Integer.valueOf(Optional.ofNullable(list.get(0)).orElseThrow()));
+        addressTag.setPublicKey(new PublicKey(Optional.ofNullable(list.get(1)).orElseThrow()));
+        Optional.ofNullable(list.get(2)).ifPresent(identifier -> addressTag.setIdentifierTag(new IdentifierTag(identifier)));
         Optional.ofNullable(node.get(2)).ifPresent(relay -> addressTag.setRelay(new Relay(relay.asText())));
 
         return (T) addressTag;

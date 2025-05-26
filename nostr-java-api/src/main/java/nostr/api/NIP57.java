@@ -8,6 +8,7 @@ import nostr.base.ElementAttribute;
 import nostr.base.PublicKey;
 import nostr.base.Relay;
 import nostr.event.BaseTag;
+import nostr.event.Kind;
 import nostr.event.impl.GenericEvent;
 import nostr.event.tag.GenericTag;
 import nostr.event.impl.ZapRequest;
@@ -64,7 +65,19 @@ public class NIP57<T extends GenericEvent> extends EventNostr<T> {
     }
 
     public NIP57<T> createZapReceiptEvent(@NonNull String zapRequestPubKeyTag, List<BaseTag> baseTags, String zapRequestEventTag, String zapReceiptAddressTag, String zapReceiptIdentifier, String zapReceiptRelayUri, String bolt11, String descriptionSha256, String preimage) {
-        return createZapReceiptEvent(new PubKeyTag(new PublicKey(zapRequestPubKeyTag)), baseTags, new EventTag(zapRequestEventTag), new AddressTag(null, new PublicKey(zapReceiptAddressTag), new IdentifierTag(zapReceiptIdentifier), new Relay(zapReceiptRelayUri)), bolt11, descriptionSha256, preimage);
+        return createZapReceiptEvent(
+            new PubKeyTag(
+                new PublicKey(zapRequestPubKeyTag)), 
+            baseTags, 
+            new EventTag(zapRequestEventTag), 
+            new AddressTag(
+                Kind.ZAP_RECEIPT.getValue(), 
+                new PublicKey(zapReceiptAddressTag),
+                new IdentifierTag(zapReceiptIdentifier),
+                new Relay(zapReceiptRelayUri)), 
+            bolt11, 
+            descriptionSha256, 
+            preimage);
     }
 
     public NIP57<T> addLnurlTag(@NonNull String lnurl) {
