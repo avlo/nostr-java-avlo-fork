@@ -18,7 +18,7 @@ public class AddressTagSerializer extends JsonSerializer<AddressTag> {
         );
 
         if (value.getIdentifierTag() != null) {
-            jsonGenerator.writeString(value.getRelay().getUri());
+            jsonGenerator.writeString(value.getIdentifierTag().getUuid());
         }
 
         if (value.getRelay() != null) {
