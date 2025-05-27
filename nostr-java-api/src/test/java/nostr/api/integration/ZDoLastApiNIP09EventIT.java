@@ -85,7 +85,7 @@ public class ZDoLastApiNIP09EventIT {
         nip01
             .createTextNoteEvent("Reference me!")
             .getEvent()
-            .addTag(nip01.createAddressTag(10_001, identity.getPublicKey(), identifierTag, new Relay(RELAY_URI)));
+            .addTag(new AddressTag(10_001, identity.getPublicKey(), identifierTag, new Relay(RELAY_URI)));
 
         BaseMessage message = nip01.signAndSend(relays);
 

@@ -137,17 +137,14 @@ public class FiltersDecoderTest {
         addressTag.setIdentifierTag(new IdentifierTag(uuidValue1));
         addressTag.setRelay(relay);
 
-        String expected = String.join("\\\",\\\"", joined, relay.getUri());
+        String expected = String.join(",", joined, relay.getUri());
         String addressableTag = "{\"#a\":[\"" + expected + "\"]}";
         Filters decodedFilters = new FiltersDecoder().decode(addressableTag);
 
-        Filters expectedFilters = new Filters(new AddressTagFilter<>(addressTag));
-        log.debug("000000000000000");
-        log.debug(expectedFilters.toString());
-        log.debug("----------");
-        log.debug(decodedFilters.toString());
-        log.debug("000000000000000");
-        assertEquals(expectedFilters, decodedFilters);
+        assertEquals(
+            new Filters(
+                new AddressTagFilter<>(addressTag)), 
+            decodedFilters);
     }
 
     @Test
