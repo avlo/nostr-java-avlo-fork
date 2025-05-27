@@ -66,8 +66,10 @@ public class AddressTag extends BaseTag {
         List<String> list = Arrays.stream(node.get(1).asText().split(":")).toList();
 
         final AddressTag addressTag = new AddressTag();
+        
         addressTag.setKind(Integer.valueOf(Optional.ofNullable(list.get(0)).orElseThrow()));
         addressTag.setPublicKey(new PublicKey(Optional.ofNullable(list.get(1)).orElseThrow()));
+        
         Optional.ofNullable(list.get(2)).ifPresent(identifier -> addressTag.setIdentifierTag(new IdentifierTag(identifier)));
         Optional.ofNullable(node.get(2)).ifPresent(relay -> addressTag.setRelay(new Relay(relay.asText())));
 

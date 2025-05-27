@@ -46,8 +46,9 @@ public class AddressTagFilter<T extends AddressTag> extends AbstractFilterable<T
             String.join(":", requiredAttributes, identifierTag.getUuid())).orElse(
             Strings.concat(requiredAttributes, ":"));
 
-        return Optional.ofNullable(getAddressableTag().getRelay()).map(relay ->
-            String.join("\",\"", identifierTagPortion, relay.getUri())).orElse(identifierTagPortion);
+        String s = Optional.ofNullable(getAddressableTag().getRelay()).map(relay ->
+            String.join(",", identifierTagPortion, relay.getUri())).orElse(identifierTagPortion);
+        return s;
     }
 
     private T getAddressableTag() {

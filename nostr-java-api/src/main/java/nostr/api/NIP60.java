@@ -245,8 +245,7 @@ public class NIP60<T extends GenericEvent> extends EventNostr<T> {
     private List<BaseTag> getTokenEventTags(@NonNull Wallet wallet) {
         List<BaseTag> tags = new ArrayList<>();
 
-        tags.add(NIP01.createAddressTag(37375, getSender().getPublicKey(), NIP01.createIdentifierTag(wallet.getId()),
-                null));
+        tags.add(NIP01.createAddressTag(37375, getSender().getPublicKey(), NIP01.createIdentifierTag(wallet.getId())));
 
         return tags;
     }
@@ -260,8 +259,7 @@ public class NIP60<T extends GenericEvent> extends EventNostr<T> {
         tags.add(NIP60.createExpirationTag(quote.getExpiration()));
         tags.add(NIP60.createMintTag(quote.getMint()));
         tags.add(NIP01.createAddressTag(37375, getSender().getPublicKey(),
-                NIP01.createIdentifierTag(quote.getWallet().getId()),
-                null));
+                NIP01.createIdentifierTag(quote.getWallet().getId())));
         return tags;
     }
 

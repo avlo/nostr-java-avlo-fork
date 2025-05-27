@@ -4,8 +4,8 @@
  */
 package nostr.api;
 
+import java.util.List;
 import lombok.NonNull;
-import nostr.api.factory.impl.NIP01Impl.AddressTagFactory;
 import nostr.api.factory.impl.NIP01Impl.CloseMessageFactory;
 import nostr.api.factory.impl.NIP01Impl.EoseMessageFactory;
 import nostr.api.factory.impl.NIP01Impl.EphemeralEventFactory;
@@ -38,10 +38,7 @@ import nostr.event.tag.IdentifierTag;
 import nostr.event.tag.PubKeyTag;
 import nostr.id.Identity;
 
-import java.util.List;
-
 /**
- *
  * @author eric
  */
 public class NIP01<T extends NIP01Event> extends EventNostr<T> {
@@ -86,7 +83,7 @@ public class NIP01<T extends NIP01Event> extends EventNostr<T> {
     public NIP01<T> createMetadataEvent(@NonNull UserProfile profile) {
         var sender = getSender();
         var event = (sender != null) ? new MetadataEventFactory(sender, profile).create()
-                : new MetadataEventFactory(profile).create();
+            : new MetadataEventFactory(profile).create();
 
         this.setEvent((T) event);
         return this;
@@ -149,7 +146,7 @@ public class NIP01<T extends NIP01Event> extends EventNostr<T> {
      * @param recommendedRelayUrl the recommended relay
      * @param marker              the marker
      * @return an event tag with the id of the related event and optional
-     *         recommended relay and marker
+     * recommended relay and marker
      */
     public static EventTag createEventTag(@NonNull String relateEventId, String recommendedRelayUrl, Marker marker) {
         var result = new EventTagFactory(relateEventId).create();
@@ -163,7 +160,7 @@ public class NIP01<T extends NIP01Event> extends EventNostr<T> {
      *
      * @param publicKey the associated public key
      * @return a pubkey tag with the hex representation of the associated public
-     *         key
+     * key
      */
     public static PubKeyTag createPubKeyTag(@NonNull PublicKey publicKey) {
         return new PubKeyTagFactory(publicKey).create();
@@ -177,7 +174,7 @@ public class NIP01<T extends NIP01Event> extends EventNostr<T> {
      * @param mainRelayUrl the recommended relay
      * @param petName      the petname
      * @return a pubkey tag with the hex representation of the associated public
-     *         key and the optional recommended relay and petname
+     * key and the optional recommended relay and petname
      */
     public static PubKeyTag createPubKeyTag(@NonNull PublicKey publicKey, String mainRelayUrl, String petName) {
         var result = new PubKeyTagFactory(publicKey).create();
@@ -241,7 +238,6 @@ public class NIP01<T extends NIP01Event> extends EventNostr<T> {
     }
 
     /**
-     *
      * @param comment the event's comment
      */
     public NIP01<T> createParameterizedReplaceableEvent(@NonNull Integer kind, String comment) {
@@ -252,14 +248,13 @@ public class NIP01<T extends NIP01Event> extends EventNostr<T> {
     }
 
     /**
-     *
      * @param tags
      * @param kind
      * @param comment
      * @return
      */
     public NIP01<T> createParameterizedReplaceableEvent(@NonNull List<BaseTag> tags, @NonNull Integer kind,
-            String comment) {
+        String comment) {
         var event = new ParameterizedReplaceableEventFactory(getSender(), tags, kind, comment).create();
 
         this.setEvent((T) event);
@@ -267,7 +262,6 @@ public class NIP01<T extends NIP01Event> extends EventNostr<T> {
     }
 
     /**
-     *
      * @param id
      * @return
      */
@@ -275,22 +269,15 @@ public class NIP01<T extends NIP01Event> extends EventNostr<T> {
         return new IdentifierTagFactory(id).create();
     }
 
-    /**
-     *
-     * @param kind
-     * @param publicKey
-     * @param idTag
-     * @param relay
-     * @return
-     */
-    public static AddressTag createAddressTag(@NonNull Integer kind, @NonNull PublicKey publicKey,
-            IdentifierTag idTag, Relay relay) {
-        var result = new AddressTagFactory(publicKey).create();
-        if(idTag != null) {
-            result.setIdentifierTag(idTag);
-        }
-        result.setKind(kind);
-        result.setRelay(relay);
-        return result;
+    public static AddressTag createAddressTag(@NonNull Integer kind, @NonNull PublicKey publicKey) {
+        return new AddressTag(kind, publicKey);
+    }
+    
+    public static AddressTag createAddressTag(@NonNull Integer kind, @NonNull PublicKey publicKey, @NonNull IdentifierTag idTag) {
+        return new AddressTag(kind, publicKey, idTag);
+    }
+
+    public static AddressTag createAddressTag(@NonNull Integer kind, @NonNull PublicKey publicKey, @NonNull IdentifierTag idTag, @NonNull Relay relay) {
+        return new AddressTag(kind, publicKey, idTag, relay);
     }
 }

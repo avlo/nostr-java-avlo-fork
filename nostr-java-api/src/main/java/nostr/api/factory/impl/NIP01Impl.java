@@ -240,25 +240,6 @@ public class NIP01Impl {
 
     @Data
     @EqualsAndHashCode(callSuper = false)
-    public static class AddressTagFactory extends AbstractTagFactory<AddressTag> {
-
-        private Integer kind;
-        private final PublicKey publicKey;
-        private IdentifierTag identifierTag;
-        private Relay relay;
-
-        public AddressTagFactory(@NonNull PublicKey publicKey) {
-            this.publicKey = publicKey;
-        }
-
-        @Override
-        public AddressTag create() {
-            return new AddressTag(kind, publicKey, identifierTag, relay);
-        }
-    }
-
-    @Data
-    @EqualsAndHashCode(callSuper = false)
     @AllArgsConstructor
     public static class CloseMessageFactory extends MessageFactory<CloseMessage> {
 
