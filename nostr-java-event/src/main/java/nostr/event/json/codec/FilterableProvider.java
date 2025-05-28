@@ -1,11 +1,15 @@
 package nostr.event.json.codec;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.StreamSupport;
 import lombok.NonNull;
+import lombok.SneakyThrows;
+import nostr.base.IDecoder;
 import nostr.event.filter.AddressTagFilter;
 import nostr.event.filter.AuthorFilter;
 import nostr.event.filter.EventFilter;
@@ -20,6 +24,7 @@ import nostr.event.filter.ReferencedPublicKeyFilter;
 import nostr.event.filter.SinceFilter;
 import nostr.event.filter.UntilFilter;
 import nostr.event.filter.VoteTagFilter;
+import org.apache.logging.log4j.util.Strings;
 
 public class FilterableProvider {
   protected static List<Filterable> getFilterFunction(@NonNull JsonNode node, @NonNull String type) {
@@ -44,19 +49,28 @@ public class FilterableProvider {
     return StreamSupport.stream(jsonNode.spliterator(), false).map(filterFunction).toList();
   }
 
+  @SneakyThrows
   private static List<Filterable> getFilterableMulti(JsonNode jsonNode, Function<JsonNode, Filterable> filterFunction) {
-    List<Filterable> rets = new ArrayList<>();
-    
-    jsonNode.elements()
-        .forEachRemaining(node ->
-            getAVoid(filterFunction, node, rets));
-
-    return rets;
+    List<Filterable> list = new ArrayList<>();
+    JsonNode jsonNode1 = getJsonNode1(jsonNode);
+    Iterator<JsonNode> iterator = jsonNode1.iterator();
+    iterator.forEachRemaining(node ->
+    {
+      Filterable applied = filterFunction.apply(node);
+      list.add(applied);
+    });
+    return list;
   }
 
-    private static void getAVoid(Function<JsonNode, Filterable> filterFunction, JsonNode node, List<Filterable> rets) {
-        StreamSupport.stream(node.spliterator(), false)
-            .map(filterFunction)
-            .forEach(rets::add);
+  private static JsonNode getJsonNode1(JsonNode jsonNode) throws JsonProcessingException {
+    String string = jsonNode.toString();
+    String prefix = Strings.concat("[", string);
+    String postfix = Strings.concat(prefix, "]");
+    JsonNode jsonNode1 = IDecoder.I_DECODER_MAPPER_AFTERBURNER.readTree(postfix);
+    boolean b = string.startsWith("[[");
+    if (b) {
+      return jsonNode;
     }
+    return jsonNode1;
+  }
 }

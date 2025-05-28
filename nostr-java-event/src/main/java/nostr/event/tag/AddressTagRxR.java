@@ -1,77 +1,77 @@
-package nostr.event.tag;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import nostr.base.PublicKey;
-import nostr.base.Relay;
-import nostr.base.annotation.Key;
-import nostr.base.annotation.Tag;
-import nostr.event.BaseTag;
-import nostr.event.json.serializer.AddressTagSerializerRxR;
-
-//@Builder
-@Data
-@EqualsAndHashCode(callSuper = false)
-@Tag(code = "a", nip = 33)
-@JsonPropertyOrder({"kind", "publicKey", "identifierTag", "relay"})
-@NoArgsConstructor
-@JsonSerialize(using = AddressTagSerializerRxR.class)
-public class AddressTagRxR extends BaseTag {
-
-  @Key
-  @JsonProperty
-  private Integer kind;
-
-  @Key
-  @JsonProperty
-  private PublicKey publicKey;
-
-  @Key
-  @JsonProperty
-  @JsonInclude(JsonInclude.Include.NON_NULL)
-  private IdentifierTag identifierTag;
-
-  @Key
-  @JsonProperty
-  @JsonInclude(JsonInclude.Include.NON_NULL)
-  private Relay relay;
-
-  public AddressTagRxR(@NonNull Integer kind, @NonNull PublicKey publicKey) {
-    this.kind = kind;
-    this.publicKey = publicKey;
-  }
-
-  public AddressTagRxR(@NonNull Integer kind, @NonNull PublicKey publicKey, @NonNull IdentifierTag identifierTag) {
-    this(kind, publicKey);
-    this.identifierTag = identifierTag;
-  }
-
-  public AddressTagRxR(@NonNull Integer kind, @NonNull PublicKey publicKey, @NonNull IdentifierTag identifierTag, @NonNull Relay relay) {
-    this(kind, publicKey, identifierTag);
-    this.relay = relay;
-  }
-
-  public static <T extends BaseTag> T deserialize(@NonNull JsonNode node) {
-    List<String> list = Arrays.stream(node.get(1).asText().split(":")).toList();
-
-    final AddressTagRxR addressTag = new AddressTagRxR();
-
-    addressTag.setKind(Integer.valueOf(Optional.ofNullable(list.get(0)).orElseThrow()));
-    addressTag.setPublicKey(new PublicKey(Optional.ofNullable(list.get(1)).orElseThrow()));
-
-    Optional.ofNullable(list.get(2)).ifPresent(identifier -> addressTag.setIdentifierTag(new IdentifierTag(identifier)));
-    Optional.ofNullable(node.get(2)).ifPresent(relay -> addressTag.setRelay(new Relay(relay.asText())));
-
-    return (T) addressTag;
-  }
-}
+//package nostr.event.tag;
+//
+//import com.fasterxml.jackson.annotation.JsonInclude;
+//import com.fasterxml.jackson.annotation.JsonProperty;
+//import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+//import com.fasterxml.jackson.databind.JsonNode;
+//import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+//import java.util.Arrays;
+//import java.util.List;
+//import java.util.Optional;
+//import lombok.Data;
+//import lombok.EqualsAndHashCode;
+//import lombok.NoArgsConstructor;
+//import lombok.NonNull;
+//import nostr.base.PublicKey;
+//import nostr.base.Relay;
+//import nostr.base.annotation.Key;
+//import nostr.base.annotation.Tag;
+//import nostr.event.BaseTag;
+//import nostr.event.json.serializer.AddressTagSerializerRxR;
+//
+////@Builder
+//@Data
+//@EqualsAndHashCode(callSuper = false)
+//@Tag(code = "a", nip = 33)
+//@JsonPropertyOrder({"kind", "publicKey", "identifierTag", "relay"})
+//@NoArgsConstructor
+//@JsonSerialize(using = AddressTagSerializerRxR.class)
+//public class AddressTagRxR extends BaseTag {
+//
+//  @Key
+//  @JsonProperty
+//  private Integer kind;
+//
+//  @Key
+//  @JsonProperty
+//  private PublicKey publicKey;
+//
+//  @Key
+//  @JsonProperty
+//  @JsonInclude(JsonInclude.Include.NON_NULL)
+//  private IdentifierTag identifierTag;
+//
+//  @Key
+//  @JsonProperty
+//  @JsonInclude(JsonInclude.Include.NON_NULL)
+//  private Relay relay;
+//
+//  public AddressTagRxR(@NonNull Integer kind, @NonNull PublicKey publicKey) {
+//    this.kind = kind;
+//    this.publicKey = publicKey;
+//  }
+//
+//  public AddressTagRxR(@NonNull Integer kind, @NonNull PublicKey publicKey, @NonNull IdentifierTag identifierTag) {
+//    this(kind, publicKey);
+//    this.identifierTag = identifierTag;
+//  }
+//
+//  public AddressTagRxR(@NonNull Integer kind, @NonNull PublicKey publicKey, @NonNull IdentifierTag identifierTag, @NonNull Relay relay) {
+//    this(kind, publicKey, identifierTag);
+//    this.relay = relay;
+//  }
+//
+//  public static <T extends BaseTag> T deserialize(@NonNull JsonNode node) {
+//    List<String> list = Arrays.stream(node.get(1).asText().split(":")).toList();
+//
+//    final AddressTagRxR addressTag = new AddressTagRxR();
+//
+//    addressTag.setKind(Integer.valueOf(Optional.ofNullable(list.get(0)).orElseThrow()));
+//    addressTag.setPublicKey(new PublicKey(Optional.ofNullable(list.get(1)).orElseThrow()));
+//
+//    Optional.ofNullable(list.get(2)).ifPresent(identifier -> addressTag.setIdentifierTag(new IdentifierTag(identifier)));
+//    Optional.ofNullable(node.get(2)).ifPresent(relay -> addressTag.setRelay(new Relay(relay.asText())));
+//
+//    return (T) addressTag;
+//  }
+//}

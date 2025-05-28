@@ -80,8 +80,6 @@ public class FiltersDecoderTest {
     Integer kind = 1;
     String author = "f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75";
 
-    String joined = String.join(":", String.valueOf(kind), author) + ":";
-
     String manualJoined = "1:f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75:";
 
     AddressTag addressTag = new AddressTag();
@@ -105,8 +103,6 @@ public class FiltersDecoderTest {
     Integer kind = 1;
     String author = "f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75";
     String uuidValue1 = "UUID-1";
-
-    String joined = String.join(":", String.valueOf(kind), author, uuidValue1);
 
     String manualJoined = "1:f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75:UUID-1";
 
@@ -133,8 +129,6 @@ public class FiltersDecoderTest {
     String uuidValue1 = "UUID-1";
     Relay relay = new Relay("ws://localhost:5555");
 
-    String joined = String.join(":", String.valueOf(kind), author, uuidValue1);
-
     String manualJoined = "1:f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75:UUID-1";
 
     AddressTag addressTag = new AddressTag();
@@ -142,8 +136,6 @@ public class FiltersDecoderTest {
     addressTag.setPublicKey(new PublicKey(author));
     addressTag.setIdentifierTag(new IdentifierTag(uuidValue1));
     addressTag.setRelay(relay);
-
-    String expected = String.join(",", manualJoined, relay.getUri());
 
     String manualExpected = String.join("\",\"", manualJoined, relay.getUri());
     String addressableTag = "{\"#a\":[\"" + manualExpected + "\"]}";
@@ -421,6 +413,6 @@ public class FiltersDecoderTest {
     String malformedJoin = String.join(",", String.valueOf(kind), author, uuidValue1);
     String expected = "{\"#a\":[\"" + malformedJoin + "\"]}";
 
-    assertThrows(ArrayIndexOutOfBoundsException.class, () -> new FiltersDecoder().decode(expected));
+    assertThrows(NumberFormatException.class, () -> new FiltersDecoder().decode(expected));
   }
 }
