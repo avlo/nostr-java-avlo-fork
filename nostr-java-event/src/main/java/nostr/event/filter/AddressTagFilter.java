@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import nostr.base.PublicKey;
@@ -47,7 +48,7 @@ public class AddressTagFilter<T extends AddressTag> extends AbstractFilterable<T
             Strings.concat(requiredAttributes, ":"));
 
         String s = Optional.ofNullable(getAddressableTag().getRelay()).map(relay ->
-            String.join(",", identifierTagPortion, relay.getUri())).orElse(identifierTagPortion);
+            String.join("\",\"", identifierTagPortion, relay.getUri())).orElse(identifierTagPortion);
         return s;
     }
 
@@ -85,5 +86,36 @@ public class AddressTagFilter<T extends AddressTag> extends AbstractFilterable<T
 
         return (T) addressTag;
     }
+
+    protected static <T extends BaseTag> T createAddressTagRxR(@NonNull JsonNode node) {
+        List<JsonNode> nodeList = StreamSupport.stream(node.spliterator(), false).toList();
+        List<String> requiredLIst = Arrays.stream(nodeList.get(0).asText().split(":")).toList();
+
+        final AddressTag addressTag = new AddressTag();
+        addressTag.setKind(Integer.valueOf(requiredLIst.get(0)));
+        addressTag.setPublicKey(new PublicKey(requiredLIst.get(1)));
+
+        if (requiredLIst.size() < 3)
+            return (T) addressTag;
+
+        Optional.ofNullable(requiredLIst.get(2)).ifPresent(identifierTag ->
+            addressTag.setIdentifierTag(
+//                new IdentifierTag(
+//                identifierTag.replaceAll("\"$", ""))
+                new IdentifierTag(identifierTag)
+            ));
+
+        if (!Objects.equals(2, nodeList.size()))
+            return (T) addressTag;
+
+        addressTag.setRelay(
+            new Relay(
+                nodeList.get(1).asText()
+//                    .replaceAll("^\"", "")
+            ));
+
+        return (T) addressTag;
+    }
+
 
 }

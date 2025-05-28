@@ -3,13 +3,12 @@ package nostr.event.json.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import nostr.event.tag.AddressTag;
-
 import java.io.IOException;
+import nostr.event.tag.AddressTagRxR;
 
-public class AddressTagSerializer extends JsonSerializer<AddressTag> {
+public class AddressTagSerializerRxR extends JsonSerializer<AddressTagRxR> {
     @Override
-    public void serialize(AddressTag value, JsonGenerator jsonGenerator, SerializerProvider serializers) throws IOException {
+    public void serialize(AddressTagRxR value, JsonGenerator jsonGenerator, SerializerProvider serializers) throws IOException {
         jsonGenerator.writeStartArray();
         jsonGenerator.writeString("a");
         jsonGenerator.writeString(

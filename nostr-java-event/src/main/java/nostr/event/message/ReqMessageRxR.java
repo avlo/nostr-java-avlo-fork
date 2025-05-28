@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import java.time.temporal.ValueRange;
+import java.util.List;
+import java.util.stream.IntStream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -11,12 +14,10 @@ import lombok.SneakyThrows;
 import lombok.ToString;
 import nostr.base.Command;
 import nostr.event.BaseMessage;
-import nostr.event.filter.Filters;
-import nostr.event.json.codec.FiltersDecoder;
-import nostr.event.json.codec.FiltersEncoder;
-import java.time.temporal.ValueRange;
-import java.util.List;
-import java.util.stream.IntStream;
+import nostr.event.filter.FiltersRxR;
+import nostr.event.json.codec.FiltersDecoderRxR;
+import nostr.event.json.codec.FiltersEncoderRxR;
+
 import static nostr.base.Encoder.ENCODER_MAPPED_AFTERBURNER;
 import static nostr.base.IDecoder.I_DECODER_MAPPER_AFTERBURNER;
 
@@ -26,20 +27,20 @@ import static nostr.base.IDecoder.I_DECODER_MAPPER_AFTERBURNER;
 @Getter
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
-public class ReqMessage extends BaseMessage {
+public class ReqMessageRxR extends BaseMessage {
     public static final int FILTERS_START_INDEX = 2;
 
     @JsonProperty
     private final String subscriptionId;
 
     @JsonProperty
-    private final List<Filters> filtersList;
+    private final List<FiltersRxR> filtersList;
 
-    public ReqMessage(@NonNull String subscriptionId, @NonNull Filters... filtersList) {
+    public ReqMessageRxR(@NonNull String subscriptionId, @NonNull FiltersRxR... filtersList) {
         this(subscriptionId, List.of(filtersList));
     }
 
-    public ReqMessage(@NonNull String subscriptionId, @NonNull List<Filters> filtersList) {
+    public ReqMessageRxR(@NonNull String subscriptionId, @NonNull List<FiltersRxR> filtersList) {
         super(Command.REQ.name());
         validateSubscriptionId(subscriptionId);
         this.subscriptionId = subscriptionId;
@@ -54,21 +55,28 @@ public class ReqMessage extends BaseMessage {
           .add(getSubscriptionId());
 
         filtersList.stream()
-          .map(FiltersEncoder::new)
-          .map(FiltersEncoder::encode)
-          .map(ReqMessage::createJsonNode)
+          .map(FiltersEncoderRxR::new)
+          .map(FiltersEncoderRxR::encode)
+          .map(ReqMessageRxR::createJsonNode)
           .forEach(encoderArrayNode::add);
 
-        return ENCODER_MAPPED_AFTERBURNER.writeValueAsString(encoderArrayNode);
+        String s = ENCODER_MAPPED_AFTERBURNER.writeValueAsString(encoderArrayNode);
+        return s;
     }
 
     public static <T extends BaseMessage> T decode(@NonNull Object subscriptionId, @NonNull String jsonString) throws JsonProcessingException {
         validateSubscriptionId(subscriptionId.toString());
         List<String> jsonFiltersList = getJsonFiltersList(jsonString);
-        return (T) new ReqMessage(
-          subscriptionId.toString(),
-          jsonFiltersList.stream().map(filtersList -> 
-                new FiltersDecoder().decode(filtersList)).toList());
+        List<FiltersRxR> list = jsonFiltersList.stream().map(filtersList ->
+        {
+            FiltersRxR decode = new FiltersDecoderRxR().decode(filtersList);
+            return decode;
+        }).toList();
+        
+        T t = (T) new ReqMessageRxR(
+            subscriptionId.toString(),
+            list);
+        return t;
     }
 
     private static JsonNode createJsonNode(String jsonNode) {

@@ -2,7 +2,6 @@ package nostr.api.unit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.List;
 import lombok.extern.java.Log;
 import nostr.api.NIP01;
@@ -50,6 +49,7 @@ import nostr.event.tag.PubKeyTag;
 import nostr.event.tag.VoteTag;
 import nostr.id.Identity;
 import org.junit.jupiter.api.Test;
+
 import static nostr.base.IEvent.MAPPER_AFTERBURNER;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -741,9 +741,9 @@ public class JsonParseTest {
         String uuidValue1 = "UUID-1";
         String relay = "ws://localhost:5555";
 
-        String joined1 = String.join(",", String.join(":", String.valueOf(kind), author, uuidValue1), relay);
+        String join = String.join("\",\"", String.join(":", String.valueOf(kind), author, uuidValue1), relay);
 
-        String reqJsonWithCustomTagQueryFilterToDecode = "[\"REQ\",\"" + subscriptionId + "\",{\"" + uuidKey + "\":[\"" + joined1 + "\"]}]";
+        String reqJsonWithCustomTagQueryFilterToDecode = "[\"REQ\",\"" + subscriptionId + "\",{\"" + uuidKey + "\":[\"" + join + "\"]}]";
 
         ReqMessage decodedReqMessage = new BaseMessageDecoder<ReqMessage>().decode(reqJsonWithCustomTagQueryFilterToDecode);
 
@@ -758,7 +758,50 @@ public class JsonParseTest {
         assertEquals(expectedReqMessage.encode(), decodedReqMessage.encode());
         assertEquals(expectedReqMessage, decodedReqMessage);
     }
-    
+
+
+    @Test
+    public void testMultipleAddressableTagFiltersDecoder() throws JsonProcessingException {
+        log.info("testMultipleAddressableTagFiltersDecoder");
+
+        String subscriptionId = "npub1clk6vc9xhjp8q5cws262wuf2eh4zuvwupft03hy4ttqqnm7e0jrq3upup9";
+        String uuidKey = "#a";
+
+        Integer kind1 = 1;
+        String author1 = "f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75";
+        String uuidValue1 = "UUID-1";
+
+        Integer kind2 = 1;
+        String author2 = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        String uuidValue2 = "UUID-2";
+
+        String joined1 = String.join(":", String.valueOf(kind1), author1, uuidValue1);
+        String joined2 = String.join(":", String.valueOf(kind2), author2, uuidValue2);
+
+        String joined3 = String.join("\"],[\"", joined1, joined2);
+        String reqJsonWithCustomTagQueryFilterToDecode = "[\"REQ\",\"" + subscriptionId + "\",{\"" + uuidKey + "\":[[\"" + joined3 + "\"]]}]";
+
+        ReqMessage decodedReqMessage = new BaseMessageDecoder<ReqMessage>().decode(reqJsonWithCustomTagQueryFilterToDecode);
+
+        AddressTag addressTag1 = new AddressTag();
+        addressTag1.setKind(kind1);
+        addressTag1.setPublicKey(new PublicKey(author1));
+        addressTag1.setIdentifierTag(new IdentifierTag(uuidValue1));
+
+        AddressTag addressTag2 = new AddressTag();
+        addressTag2.setKind(kind2);
+        addressTag2.setPublicKey(new PublicKey(author2));
+        addressTag2.setIdentifierTag(new IdentifierTag(uuidValue2));
+
+        ReqMessage expectedReqMessage = new ReqMessage(subscriptionId,
+            new Filters(
+                new AddressTagFilter<>(addressTag1),
+                new AddressTagFilter<>(addressTag2)));
+
+        assertEquals(expectedReqMessage.encode(), decodedReqMessage.encode());
+        assertEquals(expectedReqMessage, decodedReqMessage);
+    }
+
     @Test
     public void testReqMessageSubscriptionIdTooLong() {
         log.info("testReqMessageSubscriptionIdTooLong");
