@@ -3,6 +3,7 @@ package nostr.event.unit;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import nostr.base.PublicKey;
 import nostr.base.Relay;
 import nostr.event.BaseMessage;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@Slf4j
 public class EventWithAddressTagTest {
     @Test
     public void decodeTestWithRelay() throws JsonProcessingException {
@@ -143,5 +145,98 @@ public class EventWithAddressTagTest {
                 fail();
             }
         }
+    }
+
+    @Test
+    public void encodeTestWithoutRelay() throws JsonProcessingException {
+        Integer kind = 1;
+        String author = "f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75";
+        PublicKey publicKey = new PublicKey(author);
+        IdentifierTag identifierTag = new IdentifierTag("UUID-1");
+
+        AddressTag addressTag = new AddressTag();
+        addressTag.setKind(kind);
+        addressTag.setPublicKey(publicKey);
+        addressTag.setIdentifierTag(identifierTag);
+
+        GenericEvent genericEvent = new GenericEvent();
+        genericEvent.setKind(kind);
+        genericEvent.setPubKey(publicKey);
+        genericEvent.setTags(List.of(addressTag));
+        genericEvent.setContent("encodeTestWithoutRelay");
+
+        String expected = "[\"EVENT\",\"subscriptionId\",{\"kind\":1,\"content\":\"encodeTestWithoutRelay\",\"pubkey\":\"f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75\",\"tags\":[[\"a\",\"1:f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75:UUID-1\"]]}]";
+        assertEquals(expected,
+            new EventMessage(genericEvent, "subscriptionId")
+                .encode());
+    }
+
+    @Test
+    public void encodeTestWithoutIdentifierTagWithoutRelay() throws JsonProcessingException {
+        Integer kind = 1;
+        String author = "f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75";
+        PublicKey publicKey = new PublicKey(author);
+
+        AddressTag addressTag = new AddressTag();
+        addressTag.setKind(kind);
+        addressTag.setPublicKey(publicKey);
+
+        GenericEvent genericEvent = new GenericEvent();
+        genericEvent.setKind(kind);
+        genericEvent.setPubKey(publicKey);
+        genericEvent.setTags(List.of(addressTag));
+        genericEvent.setContent("encodeTestWithoutIdentifierTagWithoutRelay");
+
+        String expected = "[\"EVENT\",\"subscriptionId\",{\"kind\":1,\"content\":\"encodeTestWithoutIdentifierTagWithoutRelay\",\"pubkey\":\"f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75\",\"tags\":[[\"a\",\"1:f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75:\"]]}]";
+        assertEquals(expected,
+            new EventMessage(genericEvent, "subscriptionId").encode());
+    }
+
+    @Test
+    public void encodeTestWithoutIdentifierTagWithRelay() throws JsonProcessingException {
+        Integer kind = 1;
+        String author = "f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75";
+        PublicKey publicKey = new PublicKey(author);
+        Relay relay = new Relay("ws://localhost:5555");
+
+        AddressTag addressTag = new AddressTag();
+        addressTag.setKind(kind);
+        addressTag.setPublicKey(publicKey);
+        addressTag.setRelay(relay);
+
+        GenericEvent genericEvent = new GenericEvent();
+        genericEvent.setKind(kind);
+        genericEvent.setPubKey(publicKey);
+        genericEvent.setTags(List.of(addressTag));
+        genericEvent.setContent("encodeTestWithoutIdentifierTagWithoutRelay");
+
+        String expected = "[\"EVENT\",\"subscriptionId\",{\"kind\":1,\"content\":\"encodeTestWithoutIdentifierTagWithoutRelay\",\"pubkey\":\"f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75\",\"tags\":[[\"a\",\"1:f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75:\",\"ws://localhost:5555\"]]}]";
+        assertEquals(expected,
+            new EventMessage(genericEvent, "subscriptionId").encode());
+    }
+
+    @Test
+    public void encodeTestWithIdentifierTagWithRelay() throws JsonProcessingException {
+        Integer kind = 1;
+        String author = "f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75";
+        PublicKey publicKey = new PublicKey(author);
+        IdentifierTag identifierTag = new IdentifierTag("UUID-1");
+        Relay relay = new Relay("ws://localhost:5555");
+
+        AddressTag addressTag = new AddressTag();
+        addressTag.setKind(kind);
+        addressTag.setPublicKey(publicKey);
+        addressTag.setIdentifierTag(identifierTag);
+        addressTag.setRelay(relay);
+
+        GenericEvent genericEvent = new GenericEvent();
+        genericEvent.setKind(kind);
+        genericEvent.setPubKey(publicKey);
+        genericEvent.setTags(List.of(addressTag));
+        genericEvent.setContent("encodeTestWithoutIdentifierTagWithoutRelay");
+
+        String expected = "[\"EVENT\",\"subscriptionId\",{\"kind\":1,\"content\":\"encodeTestWithoutIdentifierTagWithoutRelay\",\"pubkey\":\"f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75\",\"tags\":[[\"a\",\"1:f1b419a95cb0233a11d431423b41a42734e7165fcab16081cd08ef1c90e0be75:UUID-1\",\"ws://localhost:5555\"]]}]";
+        assertEquals(expected,
+            new EventMessage(genericEvent, "subscriptionId").encode());
     }
 }
