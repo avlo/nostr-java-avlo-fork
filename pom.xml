@@ -13,62 +13,12 @@
     </parent>
 
     <name>${project.artifactId}</name>
-    <description>Java SDK for Nostr, for generating, signing and publishing events to relays</description>
-    <url>https://github.com/tcheeric/nostr-java</url>
-
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <name>@tcheeric</name>
-        </developer>
-        <developer>
-            <name>@avlo</name>
-        </developer>
-        <developer>
-            <name>@guilhermegps</name>
-        </developer>
-        <developer>
-            <name>@devinbileck</name>
-        </developer>
-        <developer>
-            <name>@Memory-of-Snow</name>
-        </developer>
-        <developer>
-            <name>@austenjt</name>
-        </developer>
-        <developer>
-            <name>@maxbrito500</name>
-        </developer>
-        <developer>
-            <name>@KoalaSat</name>
-        </developer>
-    </developers>
-
-    <scm>
-        <connection>scm:git://github.com/tcheeric/nostr-java.git</connection>
-        <developerConnection>scm:git:https://github.com:tcheeric/nostr-java.git</developerConnection>
-        <url>https://github.com/tcheeric/nostr-java/tree/${project.scm.tag}</url>
-        <tag>main</tag>
-    </scm>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <description>Prisilion variant SDK for Nostr Base Classes</description>
 
     <modules>
         <module>nostr-java-base</module>
         <module>nostr-java-crypto</module>
         <module>nostr-java-event</module>
-        <module>nostr-java-examples</module>
         <module>nostr-java-id</module>
         <module>nostr-java-util</module>
         <module>nostr-java-client</module>
@@ -153,63 +103,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.sonatype.central</groupId>
-                    <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.6.0</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <publishingServerId>central</publishingServerId>
-                        <autoPublish>true</autoPublish>
-                        <waitUntil>published</waitUntil>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>2.2.1</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar-no-fork</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9.1</version>
-                    <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.5</version>
-                    <executions>
-                        <execution>
-                            <id>sign-artifacts</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>sign</goal>
-                            </goals>
-                            <configuration>
-                                <!--suppress UnresolvedMavenProperty -->
-                                <keyname>${gpg.keyname}</keyname>
-                                <!--suppress UnresolvedMavenProperty -->
-                                <passphraseServerId>${gpg.keyname}</passphraseServerId>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>flatten-maven-plugin</artifactId>

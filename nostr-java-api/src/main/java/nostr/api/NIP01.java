@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package nostr.api;
 
 import java.util.List;
@@ -38,9 +34,6 @@ import nostr.event.tag.IdentifierTag;
 import nostr.event.tag.PubKeyTag;
 import nostr.id.Identity;
 
-/**
- * @author eric
- */
 public class NIP01<T extends NIP01Event> extends EventNostr<T> {
 
     public NIP01(@NonNull Identity sender) {

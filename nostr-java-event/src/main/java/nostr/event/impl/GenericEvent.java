@@ -5,6 +5,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import java.beans.Transient;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.logging.Level;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -20,7 +31,6 @@ import nostr.crypto.bech32.Bech32;
 import nostr.crypto.bech32.Bech32Prefix;
 import nostr.event.BaseEvent;
 import nostr.event.BaseTag;
-import nostr.event.Deleteable;
 import nostr.event.Kind;
 import nostr.event.json.deserializer.PublicKeyDeserializer;
 import nostr.event.json.deserializer.SignatureDeserializer;
@@ -28,28 +38,12 @@ import nostr.event.tag.GenericTag;
 import nostr.util.NostrException;
 import nostr.util.NostrUtil;
 import nostr.util.thread.HexStringValidator;
-
-import java.beans.Transient;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.logging.Level;
-
 import static nostr.base.Encoder.ENCODER_MAPPED_AFTERBURNER;
 
-/**
- * @author squirrel
- */
 @Log
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class GenericEvent extends BaseEvent implements ISignable, IGenericElement, Deleteable {
+public class GenericEvent extends BaseEvent implements ISignable, IGenericElement {
 
     @Key
     @EqualsAndHashCode.Include

@@ -1,17 +1,16 @@
 package nostr.event.unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.List;
 import nostr.base.Relay;
 import nostr.event.BaseTag;
 import nostr.event.json.codec.BaseTagEncoder;
 import nostr.event.tag.RelaysTag;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static nostr.base.IEvent.MAPPER_AFTERBURNER;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class RelaysTagTest {
 
@@ -40,4 +39,13 @@ class RelaysTagTest {
         });
     }
 
+    @Test
+    void relayEqualityNonEqualityTests() {
+        Relay one = new Relay("ws://localhost:5555");
+        Relay two = new Relay("ws://localhost:5555");
+        assertEquals(one, two);
+
+        Relay three = new Relay("ws://localhost:5556");
+        assertNotEquals(one, three);
+    }
 }

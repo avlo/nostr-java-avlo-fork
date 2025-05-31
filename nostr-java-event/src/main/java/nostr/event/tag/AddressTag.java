@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import nostr.base.PublicKey;
@@ -22,7 +22,6 @@ import nostr.event.json.serializer.AddressTagSerializer;
 
 @Builder
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Tag(code = "a", nip = 33)
 @JsonPropertyOrder({"kind", "publicKey", "identifierTag", "relay"})
 @NoArgsConstructor
@@ -66,13 +65,30 @@ public class AddressTag extends BaseTag {
         List<String> list = Arrays.stream(node.get(1).asText().split(":")).toList();
 
         final AddressTag addressTag = new AddressTag();
-        
+
         addressTag.setKind(Integer.valueOf(Optional.ofNullable(list.get(0)).orElseThrow()));
         addressTag.setPublicKey(new PublicKey(Optional.ofNullable(list.get(1)).orElseThrow()));
-        
+
         Optional.ofNullable(list.get(2)).ifPresent(identifier -> addressTag.setIdentifierTag(new IdentifierTag(identifier)));
         Optional.ofNullable(node.get(2)).ifPresent(relay -> addressTag.setRelay(new Relay(relay.asText())));
 
         return (T) addressTag;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass())
+            return false;
+        AddressTag that = (AddressTag) o;
+        return
+            Objects.equals(kind, that.kind) &&
+                Objects.equals(publicKey, that.publicKey) &&
+                Objects.equals(identifierTag, that.identifierTag) &&
+                Objects.equals(relay, that.relay);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(kind, publicKey, identifierTag, relay);
     }
 }

@@ -1,9 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package nostr.api.factory.impl;
 
+import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +11,6 @@ import nostr.api.factory.EventFactory;
 import nostr.api.factory.MessageFactory;
 import nostr.base.IEvent;
 import nostr.base.PublicKey;
-import nostr.base.Relay;
 import nostr.base.UserProfile;
 import nostr.event.BaseTag;
 import nostr.event.Marker;
@@ -28,19 +25,11 @@ import nostr.event.message.EoseMessage;
 import nostr.event.message.EventMessage;
 import nostr.event.message.NoticeMessage;
 import nostr.event.message.ReqMessage;
-import nostr.event.tag.AddressTag;
 import nostr.event.tag.EventTag;
 import nostr.event.tag.IdentifierTag;
 import nostr.event.tag.PubKeyTag;
 import nostr.id.Identity;
 
-import java.util.List;
-import java.util.Optional;
-
-/**
- *
- * @author eric
- */
 public class NIP01Impl {
 
     @Data

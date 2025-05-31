@@ -14,10 +14,6 @@ import lombok.extern.java.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author squirrel
- */
-// @Builder
 @Data
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
