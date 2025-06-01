@@ -1,7 +1,7 @@
 package nostr.id;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.ToString;
@@ -17,11 +17,11 @@ import nostr.util.NostrUtil;
  * @author squirrel
  */
 @EqualsAndHashCode
-@Data
 @Log
 public class Identity {
 
     @ToString.Exclude
+    @Getter
     private final PrivateKey privateKey;
 
     private Identity(@NonNull PrivateKey privateKey) {
@@ -61,15 +61,15 @@ public class Identity {
         }
     }
 
-//    TODO: exceptions refactor
+    //    TODO: exceptions refactor
     @SneakyThrows
     public Signature sign(@NonNull ISignable signable) {
         final Signature signature = new Signature();
         signature.setRawData(
-                Schnorr.sign(
-                        NostrUtil.sha256(signable.getByeArraySupplier().get().array()),
-                        this.getPrivateKey().getRawData(),
-                        generateAuxRand()));
+            Schnorr.sign(
+                NostrUtil.sha256(signable.getByeArraySupplier().get().array()),
+                this.getPrivateKey().getRawData(),
+                generateAuxRand()));
         signature.setPubKey(getPublicKey());
         signable.getSignatureConsumer().accept(signature);
         return signature;
