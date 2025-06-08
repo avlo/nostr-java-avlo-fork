@@ -4,7 +4,7 @@ import java.util.List;
 import nostr.base.PublicKey;
 import nostr.event.filter.Filterable;
 import nostr.event.impl.AbstractBadgeDefinitionEvent;
-import nostr.event.impl.BadgeDefinitionDownVoteEvent;
+import nostr.event.impl.BadgeDefinitionDownvoteEvent;
 import nostr.event.impl.BadgeDefinitionReputationEvent;
 import nostr.event.impl.BadgeDefinitionUpvoteEvent;
 import nostr.event.tag.IdentifierTag;
@@ -34,7 +34,7 @@ public class BadgeDefinitionEventTest {
 
     @Test
     void badgeDefinitionDownVoteEventTest() {
-        BadgeDefinitionDownVoteEvent definitionDownVoteEvent = new BadgeDefinitionDownVoteEvent(senderPubkey);
+        BadgeDefinitionDownvoteEvent definitionDownVoteEvent = new BadgeDefinitionDownvoteEvent(senderPubkey);
         List<IdentifierTag> typeSpecificTags = Filterable.getTypeSpecificTags(IdentifierTag.class, definitionDownVoteEvent);
         assertEquals(1, typeSpecificTags.size());
 

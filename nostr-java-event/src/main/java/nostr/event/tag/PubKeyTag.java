@@ -43,6 +43,11 @@ public class PubKeyTag extends BaseTag {
         this.publicKey = publicKey;
     }
 
+    public PubKeyTag(@NonNull PublicKey publicKey, String mainRelayUrl) {
+        this.publicKey = publicKey;
+        this.mainRelayUrl = mainRelayUrl;
+    }
+
     public PubKeyTag(@NonNull PublicKey publicKey, String mainRelayUrl, String petName) {
         this.publicKey = publicKey;
         this.mainRelayUrl = mainRelayUrl;

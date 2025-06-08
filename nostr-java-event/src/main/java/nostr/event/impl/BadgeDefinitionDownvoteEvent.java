@@ -5,8 +5,8 @@ import nostr.base.PublicKey;
 import nostr.base.annotation.Event;
 
 @Event(name = "BadgeDefinitionDownVoteEvent")
-public class BadgeDefinitionDownVoteEvent extends AbstractBadgeDefinitionEvent {
-    public BadgeDefinitionDownVoteEvent(@NonNull PublicKey pubKey) {
+public class BadgeDefinitionDownvoteEvent extends AbstractBadgeDefinitionEvent {
+    public BadgeDefinitionDownvoteEvent(@NonNull PublicKey pubKey) {
         super(pubKey, Type.DOWNVOTE);
     }
 
