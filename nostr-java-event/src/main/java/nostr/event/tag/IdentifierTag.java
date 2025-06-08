@@ -16,7 +16,7 @@ import nostr.event.json.serializer.IdentifierTagSerializer;
 
 @Builder
 @Data
-@Tag(code = "d", nip = 33)
+@Tag(code = "d", nip = 1)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonSerialize(using = IdentifierTagSerializer.class)
