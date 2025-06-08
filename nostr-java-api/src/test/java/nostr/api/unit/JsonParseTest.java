@@ -10,7 +10,6 @@ import nostr.base.Command;
 import nostr.base.ElementAttribute;
 import nostr.base.GenericTagQuery;
 import nostr.base.PublicKey;
-import nostr.base.Relay;
 import nostr.crypto.bech32.Bech32;
 import nostr.event.BaseEvent;
 import nostr.event.BaseMessage;
