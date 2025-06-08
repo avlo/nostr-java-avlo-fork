@@ -1,5 +1,6 @@
 package nostr.api.unit;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -15,6 +16,7 @@ import nostr.event.tag.PubKeyTag;
 import nostr.id.Identity;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BadgeAwardEventTest {
     public static final PublicKey creator = new PublicKey(Identity.generateRandomIdentity().getPublicKey().toString());
@@ -65,8 +67,11 @@ public class BadgeAwardEventTest {
 
     @Test
     void badgeAwardReputationEventTest() {
-        BadgeAwardReputationEvent awardDownvoteEvent = new BadgeAwardReputationEvent(creator, receiver, uri);
-        List<AddressTag> typeSpecificTags = Filterable.getTypeSpecificTags(AddressTag.class, awardDownvoteEvent);
+        BigDecimal score = BigDecimal.valueOf(0.5);
+        BadgeAwardReputationEvent awardReputationEvent = new BadgeAwardReputationEvent(creator, receiver, score, uri);
+        assertEquals(score, awardReputationEvent.getScore());
+
+        List<AddressTag> typeSpecificTags = Filterable.getTypeSpecificTags(AddressTag.class, awardReputationEvent);
         assertEquals(1, typeSpecificTags.size());
 
         AddressTag addressTag = typeSpecificTags.getFirst();
@@ -75,10 +80,28 @@ public class BadgeAwardEventTest {
         assertEquals(Kind.BADGE_AWARD_EVENT.getValue(), addressTag.getKind());
         assertEquals(AbstractBadgeAwardEvent.Type.REPUTATION.toString(), addressTag.getIdentifierTag().getUuid());
 
-        List<PubKeyTag> pubKeyTags = Filterable.getTypeSpecificTags(PubKeyTag.class, awardDownvoteEvent);
+        List<PubKeyTag> pubKeyTags = Filterable.getTypeSpecificTags(PubKeyTag.class, awardReputationEvent);
         assertEquals(1, pubKeyTags.size());
         PubKeyTag pubkey = pubKeyTags.getFirst();
         assertEquals(receiver, pubkey.getPublicKey());
         assertEquals(uri.toString(), pubkey.getMainRelayUrl());
+    }
+
+
+    @Test
+    void testThrowsException() {
+        assertThrows(AssertionError.class, () -> new BadgeAwardReputationEvent(creator, receiver, new BigDecimal("1.1"), uri));
+        assertThrows(AssertionError.class, () -> new BadgeAwardReputationEvent(creator, receiver, new BigDecimal("-0.1"), uri));
+        assertThrows(NumberFormatException.class, () -> new BadgeAwardReputationEvent(creator, receiver, new BigDecimal("NaN"), uri));
+    }
+
+    @Test
+    void testDoesNotThrowAnyExceptions() {
+        new BadgeAwardReputationEvent(creator, receiver, new BigDecimal("0.0"), uri);
+        new BadgeAwardReputationEvent(creator, receiver, new BigDecimal("000.0000"), uri);
+        new BadgeAwardReputationEvent(creator, receiver, new BigDecimal("000.111"), uri);
+        new BadgeAwardReputationEvent(creator, receiver, new BigDecimal("0.512312"), uri);
+        new BadgeAwardReputationEvent(creator, receiver, new BigDecimal("0.9999"), uri);
+        new BadgeAwardReputationEvent(creator, receiver, new BigDecimal("1.00000"), uri);
     }
 }
